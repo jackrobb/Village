@@ -57,6 +57,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
 
             //3 Notes per vertical line in order by newest first
             linearLayoutManager = new LinearLayoutManager(getActivity(), VERTICAL, true);
+            linearLayoutManager.setStackFromEnd(true);
 
             noteList.setHasFixedSize(true);
             noteList.setLayoutManager(linearLayoutManager);
