@@ -16,6 +16,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <service android:name="jack.village.FirebaseMessaging">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service android:name="jack.village.FirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
 
         <activity
             android:name=".LoginActivity"
