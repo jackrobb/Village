@@ -44,24 +44,28 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
+        //Check to ensure email is not empty, focus field if it is
         if(email.isEmpty()){
             editTextEmail.setError("Email Required");
             editTextEmail.requestFocus();
             return;
         }
 
+        //Check to ensure an email has been entered, set focus to email if it hasn't
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             editTextEmail.setError("Please Enter A Valid Email");
             editTextEmail.requestFocus();
             return;
         }
 
+        //Check to ensure the password is not empty, set focus to password if it is
         if(password.isEmpty()){
             editTextPassword.setError("Password Required");
             editTextPassword.requestFocus();
             return;
         }
 
+        //Validate password is over 8 characters long
         if(password.length()<8){
             editTextPassword.setError("Password Must Be At Least 8 Characters Long");
             editTextPassword.requestFocus();
@@ -70,10 +74,13 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         progressBar.setVisibility(View.VISIBLE);
 
+        //Create new user in the database
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 progressBar.setVisibility(View.GONE);
+
+                //If successful finish the activity, give the user a notification it was successful and open Main Activity
                 if(task.isSuccessful()){
                     finish();
                     Toast.makeText(getApplicationContext(), "Registration Successful", Toast.LENGTH_SHORT).show();
@@ -95,11 +102,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+
+            //On click open sign up activity
             case R.id.buttonSignUp:
                 registerUser();
                 break;
 
             case R.id.textViewLogin:
+                //On click finish activity and open Login Activity
                 finish();
                 Intent i = new Intent(this, LoginActivity.class);
                 startActivity(i);

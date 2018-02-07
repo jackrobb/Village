@@ -35,37 +35,47 @@ public class ChangePasswordActivity extends AppCompatActivity {
     }
 
     public void change (View view){
+        //Get instance of firebase user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user!=null){
 
+            //Get new email and password
             String email = changeEmail.getText().toString().trim();
             String password = changePassword.getText().toString().trim();
 
+            //Ensure email is not empty, set focus on email field if it is
             if(email.isEmpty()){
                 changeEmail.setError("Email Required");
                 changeEmail.requestFocus();
                 return;
             }
 
+            //Ensure email is and email, set focus on email field if not
             if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
                 changeEmail.setError("Please Enter A Valid Email");
                 changeEmail.requestFocus();
                 return;
             }
 
+            //Ensure Password is not empty, set focus on password field if it is
             if(password.isEmpty()){
                 changePassword.setError("Password Required");
                 changePassword.requestFocus();
                 return;
             }
 
+            //Ensure password is at least 8 characters long (security), if not set focus on password field
             if(password.length()<8){
                 changePassword.setError("Password Must Be At Least 8 Characters Long");
                 changePassword.requestFocus();
                 return;
             }
+
+            //Display message to user acknowledging account being updated
             dialog.setMessage("Updating Account, Please Wait");
             dialog.show();
+
+            //Update email and password
             user.updateEmail(email);
             user.updatePassword(password).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

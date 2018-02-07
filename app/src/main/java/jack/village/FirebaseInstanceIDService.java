@@ -15,7 +15,7 @@ public class FirebaseInstanceIDService extends com.google.firebase.iid.FirebaseI
         @Override
         public void onTokenRefresh() {
 
-            //Getting registration token
+            //Getting registration token (Unique ID allowing it to receive messages)
             String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
             //Displaying token in logcat

@@ -40,39 +40,43 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void userLogin(){
 
+        //Retrieve user email and password
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
+        //Ensure email is not empty, set focus on email field if it is
         if(email.isEmpty()){
             editTextEmail.setError("Email Required");
             editTextEmail.requestFocus();
             return;
         }
 
+        //Ensure email is an email, set focus on email field of it is not
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             editTextEmail.setError("Please Enter A Valid Email");
             editTextEmail.requestFocus();
             return;
         }
 
+        //Ensure password is not empty, set focus on password if it is
         if(password.isEmpty()){
             editTextPassword.setError("Password Required");
             editTextPassword.requestFocus();
             return;
         }
 
-        if(password.length()<8){
-            editTextPassword.setError("Password Must Be At Least 8 Characters Long");
-            editTextPassword.requestFocus();
-            return;
-        }
-
+        //Display Progress Bar
         progressBar.setVisibility(View.VISIBLE);
 
+        //Sign into Firebase using email and password
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+
+                //Clear Progress Bar
                 progressBar.setVisibility(View.GONE);
+
+                //If successful close login activity, start new activity Main activity
                 if(task.isSuccessful()){
                     finish();
                     Intent j = new Intent(LoginActivity.this, MainActivity.class);
@@ -89,6 +93,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onStart() {
         super.onStart();
 
+        //On Start check for current user, if someone is logged in close login activity and open Main Activity
         if(mAuth.getCurrentUser() !=null){
             finish();
             startActivity(new Intent(this, MainActivity.class));
@@ -97,6 +102,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
+        //Switch between the different options
         switch(view.getId()){
             case R.id.textViewSignup:
                 Intent signUp = new Intent(this, SignUpActivity.class);

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 public class NoteViewHolder extends ViewHolder {
 
+    //View Holder for the notes
     View view;
 
     TextView textTitle;
@@ -30,11 +31,14 @@ public class NoteViewHolder extends ViewHolder {
 
     }
 
+    //Sets the title, content and time for each note
     public void setNoteTitle(String title){
         textTitle.setText(title);
     }
 
-    public void setNoteContent(String content) { textContent.setText(content);}
+    public void setNoteContent(String content) {
+        textContent.setText(content);
+    }
 
     public void setNoteTime(String time){
         textTime.setText(time);

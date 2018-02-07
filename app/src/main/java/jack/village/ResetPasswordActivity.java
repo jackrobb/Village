@@ -39,22 +39,25 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-
+        //On click listener on reset button
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 String email = userEmail.getText().toString().trim();
 
+                //Give fault if email is empty
                 if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(getApplication(), "Enter your registered email id", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplication(), "Enter a registered email", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 progressBar.setVisibility(View.VISIBLE);
 
+                //Send password reset to users email
                 auth.sendPasswordResetEmail(email)
 
+                        //On complete give user completion feedback
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {

@@ -44,6 +44,8 @@ public class NewNoteActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
+
+        //Initiate Note Menu which contains button to delete note
         getMenuInflater().inflate(R.menu.note_menu, menu);
         return true;
     }
@@ -53,9 +55,11 @@ public class NewNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_note);
 
+        //Check to see if the note exists
         try {
             noteID = getIntent().getStringExtra("noteId");
 
+            //Set boolean to true is note exists
             if (!noteID.trim().equals("")) {
                 exists = true;
             } else {
@@ -71,9 +75,8 @@ public class NewNoteActivity extends AppCompatActivity {
         newNoteContent = findViewById(R.id.newNoteContent);
         toolbar = findViewById(R.id.newNoteToolBar);
 
+        //Set toolbar to custom toolbar
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mAuth = FirebaseAuth.getInstance();
         notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(mAuth.getCurrentUser().getUid());
@@ -84,6 +87,7 @@ public class NewNoteActivity extends AppCompatActivity {
                 String title = newNoteTitle.getText().toString().trim();
                 String content = newNoteContent.getText().toString().trim();
 
+                //If both fields are filled it will call method createNote
                 if(!TextUtils.isEmpty(title) && !TextUtils.isEmpty(content)){
                     createNote(title, content);
                     finish();
@@ -93,11 +97,12 @@ public class NewNoteActivity extends AppCompatActivity {
             }
         });
 
+        //Calls method put data
         putData();
     }
 
     private void putData() {
-
+        //When the user clicks on an existing note, it will fill the title and content fields with the existing content from the database for the user to edit it
         if (exists) {
             notesDatabase.child(noteID).addValueEventListener(new ValueEventListener() {
                 @Override
@@ -108,6 +113,8 @@ public class NewNoteActivity extends AppCompatActivity {
 
                         newNoteTitle.setText(title);
                         newNoteContent.setText(content);
+
+                        //Button value changed from create note to update note
                         newNoteButton.setText("Update Note");
                     }
                 }
@@ -126,23 +133,29 @@ public class NewNoteActivity extends AppCompatActivity {
                 // UPDATE A NOTE
 
                 Map updateMap = new HashMap();
+
+                //Gets the new content
                 updateMap.put("title", newNoteTitle.getText().toString().trim());
                 updateMap.put("content", newNoteContent.getText().toString().trim());
                 updateMap.put("timestamp", ServerValue.TIMESTAMP);
 
+                //Update the database entry
                 notesDatabase.child(noteID).updateChildren(updateMap);
 
-                Toast.makeText(this, "Note updated", Toast.LENGTH_SHORT).show();
+                //Allow user to see update was successful and finish the activity
+                Toast.makeText(this, "Note Updated", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
                 // CREATE A NEW NOTE
                 final DatabaseReference newNote = notesDatabase.push();
 
                 final Map noteMap = new HashMap();
+
                 noteMap.put("title", title);
                 noteMap.put("content", content);
                 noteMap.put("timestamp", ServerValue.TIMESTAMP);
 
+                //When note is saved alert the user
                 Thread mainThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -150,7 +163,7 @@ public class NewNoteActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(NewNoteActivity.this, "Note added to database", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(NewNoteActivity.this, "Note Successfully Created", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Toast.makeText(NewNoteActivity.this, "ERROR: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
@@ -167,6 +180,7 @@ public class NewNoteActivity extends AppCompatActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             super.onOptionsItemSelected(item);
 
+            //Switch between different menu options
             switch (item.getItemId()) {
                 case android.R.id.home:
                     finish();
@@ -185,6 +199,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
     private void deleteNote() {
 
+        //Get note by id and remove it from database, alert user on completion
         notesDatabase.child(noteID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

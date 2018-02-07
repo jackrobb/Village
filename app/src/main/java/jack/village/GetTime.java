@@ -1,7 +1,7 @@
 package jack.village;
 
 /**
- * Created by jack on 02/02/2018.
+ * code sourced from https://www.youtube.com/watch?v=z-SjqtEhDo8&index=10&list=PLgqXWQqMyp4-NdaZDXCz7tVpN2LeqhV2G
  */
 
 
@@ -22,29 +22,24 @@ public class GetTime {
 
         }
 
-        long now = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
 
-        if (time > now || time <= 0){
+        if (time > currentTime || time <= 0){
 
             return null;
 
         }
 
-        // TODO: localize
-        final long difference = now - time;
+        final long difference = currentTime - time;
 
         if (difference < MINUTE){
             return "just now";
         } else if (difference < 2 * MINUTE) {
             return "a minute ago";
-        } else if (difference < 50 * MINUTE){
+        } else if (difference < 60 * MINUTE){
             return (difference / MINUTE + " minutes ago");
-        } else if (difference < 90 * MINUTE) {
-            return "an hour ago";
         } else if (difference < 24 * HOUR){
             return (difference / HOUR + " hours ago");
-        } else if (difference < 48 * HOUR){
-            return "yesterday";
         } else {
             return difference / DAY + " days ago";
         }

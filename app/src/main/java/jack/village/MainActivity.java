@@ -18,24 +18,29 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Initiate custom toolbar for tabs
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Create an instance of the tab layout from the view.
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        // Set the text for each tab.
+        // Create an instance of the tab layout
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+
+        // Set the text for each tab
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label1));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label2));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label3));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label4));
-        // Set the tabs to fill the entire layout.
+
+        // Tabs fill full layout
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        //Allows users to flip left and right between tabs
+        final ViewPager viewPager = findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
-        // Setting a listener for clicks.
+
+        // Setting a listener for user interactions
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -59,6 +64,8 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        //Used to initiate menu containing logout and update button
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
 
@@ -68,15 +75,18 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        //Switch for different menu items
         switch(item.getItemId()){
             case R.id.menuLogout:
 
+                //Get current user and sign them out, finishing all activities to prevent users going back without signing in
                 FirebaseAuth.getInstance().signOut();
                 finishAffinity();
                 finish();
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
 
+                //Open change password activity
             case R.id.menuChange:
                 startActivity(new Intent(this, ChangePasswordActivity.class));
                 break;
