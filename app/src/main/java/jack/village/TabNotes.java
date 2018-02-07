@@ -62,6 +62,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
             noteList.setHasFixedSize(true);
             noteList.setLayoutManager(linearLayoutManager);
 
+            //Ensure the user is logged in, if they are get all their current notes
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(auth.getCurrentUser().getUid());
@@ -79,7 +80,11 @@ public class TabNotes extends Fragment implements View.OnClickListener{
 
     private void loadData() {
         progressBar.setVisibility(View.VISIBLE);
+
+        //Order the notes by time created
         Query query = notesDatabase.orderByChild("timestamp");
+
+        //Recycler Adaptor uses NoteModel class and th single note layout
         FirebaseRecyclerAdapter<NoteModel, NoteViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<NoteModel, NoteViewHolder>(
 
                 NoteModel.class,
