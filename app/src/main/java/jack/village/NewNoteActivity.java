@@ -203,14 +203,13 @@ public class NewNoteActivity extends AppCompatActivity {
         }
 
     private void deleteNote() {
-
+        finish();
         //Get note by id and remove it from database, alert user on completion
         notesDatabase.child(noteID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(NewNoteActivity.this, "Note Deleted", Toast.LENGTH_SHORT).show();
-                    finish();
                 } else {
                     Toast.makeText(NewNoteActivity.this, "ERROR: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
