@@ -34,7 +34,7 @@ public class GetTime {
 
         if (difference < MINUTE){
             return "just now";
-        } else if (difference < HOUR){
+        } else if (difference < HOUR) {
             return (difference / MINUTE + " minutes ago");
         } else if (difference < DAY){
             return (difference / HOUR + " hours ago");
