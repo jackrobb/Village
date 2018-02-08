@@ -17,16 +17,16 @@ public class GetTime {
 
         if (time < 1000000000000L) {
 
-            // If timestamp given in seconds, convert to millis
+            // If timestamp given in seconds, convert to milliseconds
             time *= 1000;
 
         }
 
         long currentTime = System.currentTimeMillis();
 
-        if (time > currentTime || time <= 0){
+        if (time > currentTime || time < 0){
 
-            return null;
+            return "loading...";
 
         }
 
@@ -34,11 +34,9 @@ public class GetTime {
 
         if (difference < MINUTE){
             return "just now";
-        } else if (difference < 2 * MINUTE) {
-            return "a minute ago";
-        } else if (difference < 60 * MINUTE){
+        } else if (difference < HOUR){
             return (difference / MINUTE + " minutes ago");
-        } else if (difference < 24 * HOUR){
+        } else if (difference < DAY){
             return (difference / HOUR + " hours ago");
         } else {
             return difference / DAY + " days ago";

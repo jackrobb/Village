@@ -7,8 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -16,27 +16,29 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class ChangePasswordActivity extends AppCompatActivity {
+public class UpdateAccountActivity extends AppCompatActivity {
 
     EditText changeEmail;
     EditText changePassword;
     FirebaseAuth auth;
-    ProgressDialog dialog;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_password);
+        setContentView(R.layout.activity_update_account);
 
         changeEmail = findViewById(R.id.changeEmail);
         changePassword = findViewById(R.id.changePassword);
         auth = FirebaseAuth.getInstance();
-        dialog = new ProgressDialog(this);
+        progressBar = findViewById(R.id.progressbar);
     }
 
     public void change (View view){
-        //Get instance of firebase user
+        //Get the current user information
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        //Failsafe check to ensure a user is definitely logged in before allowing them to change their password
         if(user!=null){
 
             //Get new email and password
@@ -71,9 +73,8 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 return;
             }
 
-            //Display message to user acknowledging account being updated
-            dialog.setMessage("Updating Account, Please Wait");
-            dialog.show();
+            //Display Progress Bar
+            progressBar.setVisibility(View.VISIBLE);
 
             //Update email and password
             user.updateEmail(email);
@@ -81,15 +82,19 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
-                        dialog.dismiss();
+
+                        //Clear Progress Bar
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getApplicationContext(), "Account Updated", Toast.LENGTH_SHORT).show();
                         auth.signOut();
                         finish();
-                        Intent login = new Intent(ChangePasswordActivity.this, LoginActivity.class);
+                        Intent login = new Intent(UpdateAccountActivity.this, LoginActivity.class);
                         finishAffinity();
                         startActivity(login);
                     }else{
-                        dialog.dismiss();
+
+                        //Clear Progress Bar
+                        progressBar.setVisibility(View.GONE);
                         Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }

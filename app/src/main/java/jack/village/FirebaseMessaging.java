@@ -39,7 +39,7 @@ public class FirebaseMessaging extends com.google.firebase.messaging.FirebaseMes
 
             //Sets up the notification on the phone
             Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "Village")
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle(title)
                     .setContentText(messageBody)

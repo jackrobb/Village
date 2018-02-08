@@ -22,10 +22,10 @@ public class MainActivity extends AppCompatActivity{
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Create an instance of the tab layout
+        // Create an instance of the tab layout which contains tab headers
         TabLayout tabLayout = findViewById(R.id.tab_layout);
 
-        // Set the text for each tab
+        // Set the text for each tab header
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label1));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label2));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label3));
@@ -86,9 +86,9 @@ public class MainActivity extends AppCompatActivity{
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
 
-                //Open change password activity
+                //Open update account activity
             case R.id.menuChange:
-                startActivity(new Intent(this, ChangePasswordActivity.class));
+                startActivity(new Intent(this, UpdateAccountActivity.class));
                 break;
         }
 

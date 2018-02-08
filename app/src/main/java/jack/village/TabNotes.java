@@ -59,14 +59,18 @@ public class TabNotes extends Fragment implements View.OnClickListener{
             linearLayoutManager = new LinearLayoutManager(getActivity(), VERTICAL, true);
             linearLayoutManager.setStackFromEnd(true);
 
+            //set note list to a fixed size and assign it to linear layout manager
             noteList.setHasFixedSize(true);
             noteList.setLayoutManager(linearLayoutManager);
 
             //Ensure the user is logged in, if they are get all their current notes
-        auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(auth.getCurrentUser().getUid());
-        }
+            auth = FirebaseAuth.getInstance();
+            if (auth.getCurrentUser() != null) {
+                notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(auth.getCurrentUser().getUid());
+
+                //Allow access to notes offline
+                notesDatabase.keepSynced(true);
+            }
 
         loadData();
         return view;
@@ -87,6 +91,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
         //Recycler Adaptor uses NoteModel class and th single note layout
         FirebaseRecyclerAdapter<NoteModel, NoteViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<NoteModel, NoteViewHolder>(
 
+                //Set the FirebaseRecyclerAdaptor to use note model and note view holder class and single note layout
                 NoteModel.class,
                 R.layout.single_note_layout,
                 NoteViewHolder.class,
@@ -99,6 +104,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
 
                 progressBar.setVisibility(View.GONE);
 
+                //Displays all users current notes
                 notesDatabase.child(noteId).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,15 +116,17 @@ public class TabNotes extends Fragment implements View.OnClickListener{
                             viewHolder.setNoteTitle(title);
                             viewHolder.setNoteContent(content);
 
+                            //Sets the time for the current notes
                             GetTime getTime = new GetTime();
                             viewHolder.setNoteTime(getTime.getTime(Long.parseLong(timestamp), getActivity().getApplicationContext()));
 
+                            //Each note is placed within a note card which is clickable, when the user selects it, it open the new note activity allowing them to edit it.
                             viewHolder.noteCard.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    Intent fullNote = new Intent(getActivity(),  NewNoteActivity.class);
-                                    fullNote.putExtra("noteId", noteId);
-                                    startActivity(fullNote);
+                                    Intent note = new Intent(getActivity(),  NewNoteActivity.class);
+                                    note.putExtra("noteId", noteId);
+                                    startActivity(note);
                                 }
                             });
                         }
@@ -133,6 +141,8 @@ public class TabNotes extends Fragment implements View.OnClickListener{
 
             }
         };
+
+        //Fills the note list with the adaptor content
         noteList.setAdapter(firebaseRecyclerAdapter);
     }
 

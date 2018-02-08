@@ -24,6 +24,7 @@ public class NoteViewHolder extends ViewHolder {
 
         view = itemView;
 
+        //Text views are set to the views on the single_note_layout.xml
         textTime = view .findViewById(R.id.noteCardTime);
         textTitle = view.findViewById(R.id.noteCardTitle);
         textContent = view.findViewById(R.id.noteCardContent);
@@ -31,7 +32,7 @@ public class NoteViewHolder extends ViewHolder {
 
     }
 
-    //Sets the title, content and time for each note
+    //Sets the title, content and time for each single note
     public void setNoteTitle(String title){
         textTitle.setText(title);
     }

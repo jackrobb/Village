@@ -3,6 +3,7 @@ package jack.village;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -78,8 +79,12 @@ public class NewNoteActivity extends AppCompatActivity {
         //Set toolbar to custom toolbar
         setSupportActionBar(toolbar);
 
+        //Obtain an instance of the FirebaseAuth class
         mAuth = FirebaseAuth.getInstance();
+
+        //Gets reference to the current users notes location of the database
         notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(mAuth.getCurrentUser().getUid());
+
 
         newNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +107,7 @@ public class NewNoteActivity extends AppCompatActivity {
     }
 
     private void putData() {
-        //When the user clicks on an existing note, it will fill the title and content fields with the existing content from the database for the user to edit it
+        //Fills in existing data from the users note
         if (exists) {
             notesDatabase.child(noteID).addValueEventListener(new ValueEventListener() {
                 @Override
@@ -134,31 +139,34 @@ public class NewNoteActivity extends AppCompatActivity {
 
                 Map updateMap = new HashMap();
 
-                //Gets the new content
+                //Sets the note map to the new content entered by the user
                 updateMap.put("title", newNoteTitle.getText().toString().trim());
                 updateMap.put("content", newNoteContent.getText().toString().trim());
                 updateMap.put("timestamp", ServerValue.TIMESTAMP);
 
-                //Update the database entry
+                //Update that database entry
                 notesDatabase.child(noteID).updateChildren(updateMap);
 
                 //Allow user to see update was successful and finish the activity
                 Toast.makeText(this, "Note Updated", Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                // CREATE A NEW NOTE
+                // Create a new note
+                //Creates reference to an auto-generated child location
                 final DatabaseReference newNote = notesDatabase.push();
 
+                //Used for storing key and value pairs
                 final Map noteMap = new HashMap();
 
+                //Add the note content to the note map
                 noteMap.put("title", title);
                 noteMap.put("content", content);
                 noteMap.put("timestamp", ServerValue.TIMESTAMP);
 
-                //When note is saved alert the user
                 Thread mainThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        //Sets the newNote to the note map values, alerts user if successful or not
                         newNote.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -182,9 +190,6 @@ public class NewNoteActivity extends AppCompatActivity {
 
             //Switch between different menu options
             switch (item.getItemId()) {
-                case android.R.id.home:
-                    finish();
-                    break;
                 case R.id.noteDelete:
                     if (exists) {
                         deleteNote();
@@ -205,7 +210,6 @@ public class NewNoteActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(NewNoteActivity.this, "Note Deleted", Toast.LENGTH_SHORT).show();
-                    noteID = "no";
                     finish();
                 } else {
                     Toast.makeText(NewNoteActivity.this, "ERROR: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
