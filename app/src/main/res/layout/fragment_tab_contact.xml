@@ -10,4 +10,15 @@
         android:layout_height="match_parent"
         android:text="Contacts" />
 
+    <Button
+        android:id="@+id/connectionCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorAccent"
+        android:background="@color/colorPrimary"
+        android:textAllCaps="false"
+        android:text="Fill out a Connection Card" />
+
 </RelativeLayout>
