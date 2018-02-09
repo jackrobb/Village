@@ -57,48 +57,57 @@ public class ConnectionCardActivity extends AppCompatActivity implements View.On
         phone = phoneField.getText().toString();
         comments = commentsField.getText().toString();
 
+
+        //Ensure name field is not empty
         if(name.isEmpty()){
             nameField.setError("Name Required");
             nameField.requestFocus();
             return;
         }
 
+        //Ensure dob field is not empty
         if(dob.isEmpty()){
             dobField.setError("DOB Required");
             dobField.requestFocus();
             return;
         }
 
+        //Ensure address field is not empty
         if(address.isEmpty()){
             addressField.setError("Address Required");
             addressField.requestFocus();
             return;
         }
 
+        //Ensure email field is not empty
         if(email.isEmpty()){
             emailField.setError("Email Required");
             emailField.requestFocus();
             return;
         }
 
+        //Ensure a valid email address is entered
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
             emailField.setError("Please Enter A Valid Email");
             emailField.requestFocus();
             return;
         }
 
+        //Ensure a valid phone number is entered
         if(!Patterns.PHONE.matcher(phone).matches()){
             phoneField.setError("Please Enter A Valid Phone Number");
             phoneField.requestFocus();
             return;
         }
 
+        //Ensure phone field is filled out
         if(phone.isEmpty()){
             phoneField.setError("Phone Number Required");
             phoneField.requestFocus();
             return;
         }
 
+        //Set up checkboxes
         if(married.isChecked()){
             relation = "Married";
         }
@@ -143,18 +152,24 @@ public class ConnectionCardActivity extends AppCompatActivity implements View.On
             next = next + "\n I'd like to be contacted by a leader \n";
         }
 
+        //Email address the form will be sent to
         String[] TO = {"jrobb6696@gmail.com"};
 
 
-        String output = "Name: " + "\n" + name + "\n\n Birthday: " + "\n" + dob + "\n\n Address: " + "\n" + address + "\n\n Email: " + "\n" + email + "\n\n Phone: " + "\n" + phone + "\n\n Marital Status: " + "\n" + relation
+        //Set string to contain the various user inputs
+        String content = "Name: " + "\n" + name + "\n\n Birthday: " + "\n" + dob + "\n\n Address: " + "\n" + address + "\n\n Email: " + "\n" + email + "\n\n Phone: " + "\n" + phone + "\n\n Marital Status: " + "\n" + relation
                 + "\n\n How did you hear about us?: " + "\n" + discovered + "\n\n What's next?: " + "\n" + next + "\n\n Additional Comments: " + "\n" + comments;
 
+        //New intent with the action of sending an email
         Intent mail = new Intent(Intent.ACTION_SEND);
+
+        //Add content to the email
         mail.putExtra(Intent.EXTRA_EMAIL, TO);
         mail.putExtra(Intent.EXTRA_SUBJECT, "Connection Card");
-        mail.putExtra(Intent.EXTRA_TEXT, output);
-        mail.setType("message/rfc822");
+        mail.putExtra(Intent.EXTRA_TEXT, content);
+        mail.setType("application/octet-stream");
         startActivity(Intent.createChooser(mail, "Send email via:"));
+        finish();
     }
 
 
@@ -164,7 +179,7 @@ public class ConnectionCardActivity extends AppCompatActivity implements View.On
         switch(view.getId()){
             case R.id.submit:
                 sendCard();
-                finish();
+                break;
         }
     }
 
