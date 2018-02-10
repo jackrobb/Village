@@ -1,13 +1,23 @@
 package jack.village;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.Manifest;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,6 +36,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class TabContact extends Fragment implements View.OnClickListener{
 
     private Button connectionCard;
+    private Button directions;
+    private Button phone;
+    private ImageButton facebook;
+    private ImageButton twitter;
+    private ImageButton instagram;
     MapView mMapView;
     private GoogleMap googleMap;
 
@@ -74,6 +89,21 @@ public class TabContact extends Fragment implements View.OnClickListener{
         connectionCard = view.findViewById(R.id.connectionCard);
         connectionCard.setOnClickListener(this);
 
+        directions = view.findViewById(R.id.directions);
+        directions.setOnClickListener(this);
+
+        phone = view.findViewById(R.id.phone);
+        phone.setOnClickListener(this);
+
+        facebook = view.findViewById(R.id.facebook);
+        facebook.setOnClickListener(this);
+
+        twitter = view.findViewById(R.id.twitter);
+        twitter.setOnClickListener(this);
+
+        instagram = view.findViewById(R.id.instagram);
+        instagram.setOnClickListener(this);
+
         return view;
     }
 
@@ -102,9 +132,109 @@ public class TabContact extends Fragment implements View.OnClickListener{
     }
 
 
+    //Ensure permission has been granted, if so call number
+    public void onCall() {
+        int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CALL_PHONE);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    getActivity(),
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    Integer.parseInt("1"));
+        } else {
+            startActivity(new Intent(Intent.ACTION_CALL).setData(Uri.parse("tel:07491010066")));
+        }
+    }
+
+    //Check to see if the user has given application permission to call
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+
+            case 1:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    onCall();
+                } else {
+                    Log.d("TAG", "Call Permission Not Granted");
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    public static String FACEBOOK_URL = "https://www.facebook.com/villagechurchbelfast";
+    public static String FACEBOOK_PAGE_ID = "villagechurchbelfast";
+
+    //method to get the right URL to use in the intent
+    public String facebook(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
+            if (versionCode >= 3002850) { //new versions
+                return "fb://facewebmodal/f?href=" + FACEBOOK_URL;
+            } else { //old versions
+                return "fb://page/" + FACEBOOK_PAGE_ID;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return FACEBOOK_URL; //normal web url
+        }
+    }
+
+    public static String TWITTER_URL = "https://www.twitter.com/Village_Belfast";
+    public static String TWITTER_PAGE_ID = "442681264";
+
+    public String twitter(Context context) {
+        try {
+            getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
+            return "twitter://user?user_id=" + TWITTER_PAGE_ID;
+        } catch (PackageManager.NameNotFoundException e) {
+            return TWITTER_URL; //normal web url
+        }
+    }
+
+    public static String INSTAGRAM_URL = "https://www.instagram.com/villagechurchbelfast";
+    public static String INSTAGRAM_PAGE_ID = "villagechurchbelfast";
+
+    public String instagram(Context context) {
+        try {
+            getActivity().getPackageManager().getPackageInfo("com.instagram.android", 0);
+            return "http://instagram.com/_u/" + INSTAGRAM_PAGE_ID;
+        } catch (PackageManager.NameNotFoundException e) {
+            return INSTAGRAM_URL; //normal web url
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.phone:
+                onCall();
+                break;
+            case R.id.facebook:
+                Intent facebookIntent = new Intent(Intent.ACTION_VIEW);
+                String facebookUrl = facebook(getActivity());
+                facebookIntent.setData(Uri.parse(facebookUrl));
+                startActivity(facebookIntent);
+                break;
+            case R.id.twitter:
+                Intent twitterIntent = new Intent(Intent.ACTION_VIEW);
+                String twitterUrl = twitter(getActivity());
+                twitterIntent.setData(Uri.parse(twitterUrl));
+                startActivity(twitterIntent);
+                break;
+            case R.id.instagram:
+                Intent instagramIntent = new Intent(Intent.ACTION_VIEW);
+                String instagramUrl = instagram(getActivity());
+                instagramIntent.setData(Uri.parse(instagramUrl));
+                startActivity(instagramIntent);
+                break;
+            case R.id.directions:
+                Intent direction = new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse("https://www.google.com/maps/dir/?api=1&destination=54.597144, -5.885955&travelmode=driving"));
+                startActivity(direction);
+                break;
             case R.id.connectionCard:
                 startActivity(new Intent(getActivity(), ConnectionCardActivity.class));
                 break;
