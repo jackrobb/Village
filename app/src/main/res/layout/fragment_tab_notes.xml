@@ -10,8 +10,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/noteList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/createNote">
+        android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
 
@@ -24,15 +23,17 @@
         android:layout_centerVertical="true"
         android:visibility="gone" />
 
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/createNote"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:background="@color/colorPrimary"
-        android:padding="10dp"
-        android:text="New Note"
-        android:textColor="@color/colorAccent" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        app:backgroundTint="@color/colorPrimary"
+        android:tint="@color/colorAccent"
+        android:src="@android:drawable/ic_input_add" />
+
 
 </RelativeLayout>

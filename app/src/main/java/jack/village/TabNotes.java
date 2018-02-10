@@ -2,6 +2,7 @@ package jack.village;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +28,7 @@ import static android.widget.GridLayout.VERTICAL;
  */
 public class TabNotes extends Fragment implements View.OnClickListener{
 
-        private Button createNote;
+        private FloatingActionButton createNote;
         private RecyclerView noteList;
         private LinearLayoutManager linearLayoutManager;
 
