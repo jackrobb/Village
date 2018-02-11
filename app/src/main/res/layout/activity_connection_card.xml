@@ -4,10 +4,9 @@
     android:layout_height="match_parent">
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     tools:context="jack.village.ConnectionCardActivity">
 
@@ -18,7 +17,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:padding="15dp"
-        android:text="Connection Card"
+        android:text="@string/connection_card"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark" />
 
@@ -26,7 +25,7 @@
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Name"
+        android:hint="@string/name"
         android:inputType="textPersonName"
         android:textCursorDrawable="@drawable/cursor"
         android:ems="10" />
@@ -36,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Birthday"
+        android:hint="@string/birthday"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="date" />
 
@@ -45,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Address"
+        android:hint="@string/address"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="textPostalAddress" />
 
@@ -54,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Email"
+        android:hint="@string/email"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="textEmailAddress" />
 
@@ -63,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Phone Number"
+        android:hint="@string/phone"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="phone" />
 
@@ -78,7 +77,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:buttonTint="@color/colorPrimaryDark"
-            android:text="Married" />
+            android:text="@string/married" />
 
         <RadioButton
             android:id="@+id/single"
@@ -86,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:buttonTint="@color/colorPrimaryDark"
-            android:text="Single" />
+            android:text="@string/single" />
 
     </RadioGroup>
 
@@ -98,7 +97,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorPrimaryDark"
         android:padding="15dp"
-        android:text="How did you hear about us?" />
+        android:text="@string/how" />
 
     <RadioGroup
         android:layout_width="match_parent"
@@ -111,7 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/colorPrimaryDark"
-            android:text="Website" />
+            android:text="@string/website" />
 
         <RadioButton
             android:id="@+id/social"
@@ -119,7 +118,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/colorPrimaryDark"
-            android:text="Social Media" />
+            android:text="@string/social" />
 
         <RadioButton
             android:id="@+id/friend"
@@ -127,7 +126,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:buttonTint="@color/colorPrimaryDark"
-            android:text="Friend" />
+            android:text="@string/friend" />
 
     </RadioGroup>
 
@@ -137,56 +136,56 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorPrimaryDark"
         android:padding="15dp"
-        android:text="What's next?" />
+        android:text="@string/next" />
 
     <CheckBox
         android:id="@+id/committing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:buttonTint="@color/colorPrimaryDark"
-        android:text="I want to know more about committing my life to Jesus" />
+        android:text="@string/commit" />
 
     <CheckBox
         android:id="@+id/baptised"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:buttonTint="@color/colorPrimaryDark"
-        android:text="I'd like to be baptised" />
+        android:text="@string/baptised" />
 
     <CheckBox
         android:id="@+id/joinmc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:buttonTint="@color/colorPrimaryDark"
-        android:text="I'm interested in joining a missional community" />
+        android:text="@string/mc" />
 
     <CheckBox
         android:id="@+id/member"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:buttonTint="@color/colorPrimaryDark"
-        android:text="I'm interested in becoming a member" />
+        android:text="@string/member" />
 
     <CheckBox
         android:id="@+id/volunteer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:buttonTint="@color/colorPrimaryDark"
-        android:text="I'd like to volunteer in a ministry" />
+        android:text="@string/volunteer" />
 
     <CheckBox
         android:id="@+id/contacted"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:buttonTint="@color/colorPrimaryDark"
-        android:text="I'd like to be contacted by a leader" />
+        android:text="@string/contacted" />
 
     <EditText
         android:id="@+id/comments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Comments"
+        android:hint="@string/comments"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="text" />
 
@@ -196,7 +195,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:textColor="@color/colorAccent"
-        android:text="Submit" />
+        android:text="@string/commit" />
 
 </LinearLayout>
 
