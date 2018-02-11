@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,7 +35,7 @@
             android:padding="15dp"
             android:background="?android:attr/selectableItemBackground"
             android:drawableStart="@android:drawable/ic_menu_directions"
-            android:text="25 Upper Newtownards Road \n Belfast \n BT4 3HT" />
+            android:text="@string/church_address" />
 
             <View
                 android:layout_width="match_parent"
@@ -57,7 +56,7 @@
             android:padding="15dp"
             android:background="?android:attr/selectableItemBackground"
             android:drawableStart="@android:drawable/ic_menu_call"
-            android:text="028 9065 6696" />
+            android:text="@string/number" />
 
             <View
                 android:layout_width="match_parent"
@@ -76,7 +75,7 @@
                 android:textAlignment="center"
                 android:padding="5dp"
                 android:textColor="@color/colorPrimary"
-                android:text="Find us on social media" />
+                android:text="@string/find_us" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -84,6 +83,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
+                    android:contentDescription="@string/facebook"
                     android:id="@+id/facebook"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -93,6 +93,7 @@
                     android:src="@drawable/ic_facebook_logo" />
 
                 <ImageButton
+                    android:contentDescription="@string/twitter"
                     android:id="@+id/twitter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -102,6 +103,7 @@
                     android:src="@drawable/ic_twitter_logo_blue" />
 
                 <ImageButton
+                    android:contentDescription="@string/instagram"
                     android:id="@+id/instagram"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -125,6 +127,6 @@
             android:textColor="@color/colorAccent"
             android:background="@color/colorPrimary"
             android:textAllCaps="false"
-            android:text="Fill out a Connection Card" />
+            android:text="@string/fill_out" />
 
 </LinearLayout>
