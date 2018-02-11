@@ -6,15 +6,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 /**
- * Created by jack on 30/01/2018.
+ * Created by jack on 30/01/2018
  */
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
-    int numberOfTabs;
+    private int numberOfTabs;
 
 
     //Populate the contents of the screen
-    public PagerAdapter(FragmentManager fragmentManager, int numberOfTabs) {
+    private PagerAdapter(FragmentManager fragmentManager, int numberOfTabs) {
         super(fragmentManager);
         this.numberOfTabs = numberOfTabs;
     }
@@ -30,7 +30,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             case 2:
                 return new TabNotes();
             case 3:
-                return new TabDonate();
+                return new TabPodcast();
             default:
                 return null;
         }
