@@ -4,7 +4,6 @@ package jack.village;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -167,7 +166,7 @@ public class TabContact extends Fragment implements View.OnClickListener{
     public static String FACEBOOK_URL = "https://www.facebook.com/villagechurchbelfast";
     public static String FACEBOOK_PAGE_ID = "villagechurchbelfast";
 
-    //method to get the right URL to use in the intent
+    //Link to facebook application
     public String facebook(Context context) {
         PackageManager packageManager = context.getPackageManager();
         try {
@@ -185,6 +184,7 @@ public class TabContact extends Fragment implements View.OnClickListener{
     public static String TWITTER_URL = "https://www.twitter.com/Village_Belfast";
     public static String TWITTER_PAGE_ID = "442681264";
 
+    //Link to Twitter application
     public String twitter(Context context) {
         try {
             getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
@@ -197,6 +197,7 @@ public class TabContact extends Fragment implements View.OnClickListener{
     public static String INSTAGRAM_URL = "https://www.instagram.com/villagechurchbelfast";
     public static String INSTAGRAM_PAGE_ID = "villagechurchbelfast";
 
+    //Link to Instagram application
     public String instagram(Context context) {
         try {
             getActivity().getPackageManager().getPackageInfo("com.instagram.android", 0);
