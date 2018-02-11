@@ -14,7 +14,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
 
     //Populate the contents of the screen
-    private PagerAdapter(FragmentManager fragmentManager, int numberOfTabs) {
+    public PagerAdapter(FragmentManager fragmentManager, int numberOfTabs) {
         super(fragmentManager);
         this.numberOfTabs = numberOfTabs;
     }
