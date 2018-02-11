@@ -10,7 +10,7 @@
     <string name="tab_label1">Home</string>
     <string name="tab_label2">Contact</string>
     <string name="tab_label3">Notes</string>
-    <string name="tab_label4">Donate</string>
+    <string name="tab_label4">Podcasts</string>
 
     <!--Google Maps Key-->
     <string name="google_maps_key">AIzaSyAuTTD47CEAygKDloXAPHHaH4QP5yr_P4M</string>
