@@ -119,7 +119,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
 
                             //Sets the time for the current notes
                             GetTime getTime = new GetTime();
-                            viewHolder.setNoteTime(getTime.getTime(Long.parseLong(timestamp), getActivity().getApplicationContext()));
+                            viewHolder.setNoteTime(getTime.getTime(Long.parseLong(timestamp)));
 
                             //Each note is placed within a note card which is clickable, when the user selects it, it open the new note activity allowing them to edit it.
                             viewHolder.noteCard.setOnClickListener(new View.OnClickListener() {

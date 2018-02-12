@@ -2,10 +2,9 @@ package jack.village;
 
 /**
  * code sourced from https://www.youtube.com/watch?v=z-SjqtEhDo8&index=10&list=PLgqXWQqMyp4-NdaZDXCz7tVpN2LeqhV2G
+ * Edited for needs of project
  */
 
-
-import android.content.Context;
 
 public class GetTime {
     private static final int SECOND = 1000;
@@ -13,7 +12,7 @@ public class GetTime {
     private static final int HOUR = 60 * MINUTE;
     private static final int DAY = 24 * HOUR;
 
-    public static String getTime(long time, Context context){
+    public static String getTime(long time){
 
         if (time < 1000000000000L) {
 
@@ -26,7 +25,7 @@ public class GetTime {
 
         if (time > currentTime || time < 0){
 
-            return "loading...";
+            return "just now";
 
         }
 

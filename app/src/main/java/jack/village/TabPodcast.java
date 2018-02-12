@@ -60,28 +60,22 @@ public class TabPodcast extends Fragment {
 
                 final Uri podcastUri = Uri.parse(link.get(position));
 
-                Thread mainThread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        MediaPlayer podcast = new MediaPlayer();
-                        podcast.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                MediaPlayer podcast = new MediaPlayer();
+                podcast.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-                        String podcast1 = podcastUri.toString();
+                String podcast1 = podcastUri.toString();
 
-                        try {
-                            podcast.setDataSource(podcast1);
-                            podcast.prepare();
-                            podcast.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                     }
-                });
-                mainThread.start();
-
+                try {
+                    podcast.setDataSource(podcast1);
+                    podcast.prepare();
+                    podcast.start();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+//
             }
         });
+
 
         new ProcessInBackground().execute();
 

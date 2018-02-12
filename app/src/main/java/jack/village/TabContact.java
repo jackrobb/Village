@@ -23,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -34,12 +35,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
  */
 public class TabContact extends Fragment implements View.OnClickListener{
 
-    private Button connectionCard;
-    private Button directions;
-    private Button phone;
-    private ImageButton facebook;
-    private ImageButton twitter;
-    private ImageButton instagram;
     MapView mMapView;
     private GoogleMap googleMap;
 
@@ -71,6 +66,7 @@ public class TabContact extends Fragment implements View.OnClickListener{
             public void onMapReady(GoogleMap mMap) {
                 googleMap = mMap;
 
+
                 //Customise map appearance
                     googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.style_json));
 
@@ -85,22 +81,22 @@ public class TabContact extends Fragment implements View.OnClickListener{
             }
         });
 
-        connectionCard = view.findViewById(R.id.connectionCard);
+        Button connectionCard = view.findViewById(R.id.connectionCard);
         connectionCard.setOnClickListener(this);
 
-        directions = view.findViewById(R.id.directions);
+        Button directions = view.findViewById(R.id.directions);
         directions.setOnClickListener(this);
 
-        phone = view.findViewById(R.id.phone);
+        Button phone = view.findViewById(R.id.phone);
         phone.setOnClickListener(this);
 
-        facebook = view.findViewById(R.id.facebook);
+        ImageButton facebook = view.findViewById(R.id.facebook);
         facebook.setOnClickListener(this);
 
-        twitter = view.findViewById(R.id.twitter);
+        ImageButton twitter = view.findViewById(R.id.twitter);
         twitter.setOnClickListener(this);
 
-        instagram = view.findViewById(R.id.instagram);
+        ImageButton instagram = view.findViewById(R.id.instagram);
         instagram.setOnClickListener(this);
 
         return view;
@@ -164,18 +160,13 @@ public class TabContact extends Fragment implements View.OnClickListener{
     }
 
     public static String FACEBOOK_URL = "https://www.facebook.com/villagechurchbelfast";
-    public static String FACEBOOK_PAGE_ID = "villagechurchbelfast";
 
     //Link to facebook application
     public String facebook(Context context) {
         PackageManager packageManager = context.getPackageManager();
         try {
             int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
-            if (versionCode >= 3002850) { //new versions
                 return "fb://facewebmodal/f?href=" + FACEBOOK_URL;
-            } else { //old versions
-                return "fb://page/" + FACEBOOK_PAGE_ID;
-            }
         } catch (PackageManager.NameNotFoundException e) {
             return FACEBOOK_URL; //normal web url
         }
@@ -185,7 +176,7 @@ public class TabContact extends Fragment implements View.OnClickListener{
     public static String TWITTER_PAGE_ID = "442681264";
 
     //Link to Twitter application
-    public String twitter(Context context) {
+    public String twitter() {
         try {
             getActivity().getPackageManager().getPackageInfo("com.twitter.android", 0);
             return "twitter://user?user_id=" + TWITTER_PAGE_ID;
@@ -198,7 +189,7 @@ public class TabContact extends Fragment implements View.OnClickListener{
     public static String INSTAGRAM_PAGE_ID = "villagechurchbelfast";
 
     //Link to Instagram application
-    public String instagram(Context context) {
+    public String instagram() {
         try {
             getActivity().getPackageManager().getPackageInfo("com.instagram.android", 0);
             return "http://instagram.com/_u/" + INSTAGRAM_PAGE_ID;
@@ -221,13 +212,13 @@ public class TabContact extends Fragment implements View.OnClickListener{
                 break;
             case R.id.twitter:
                 Intent twitterIntent = new Intent(Intent.ACTION_VIEW);
-                String twitterUrl = twitter(getActivity());
+                String twitterUrl = twitter();
                 twitterIntent.setData(Uri.parse(twitterUrl));
                 startActivity(twitterIntent);
                 break;
             case R.id.instagram:
                 Intent instagramIntent = new Intent(Intent.ACTION_VIEW);
-                String instagramUrl = instagram(getActivity());
+                String instagramUrl = instagram();
                 instagramIntent.setData(Uri.parse(instagramUrl));
                 startActivity(instagramIntent);
                 break;
