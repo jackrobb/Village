@@ -1,28 +1,29 @@
 package jack.village;
 
 
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.util.Log;
+import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 
 /**
@@ -30,10 +31,11 @@ import java.util.ArrayList;
  */
 public class TabPodcast extends Fragment {
 
-    ListView rss_feed;
-    ArrayList<String> title;
-    ArrayList<String> link;
-    ArrayList<String> description;
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeLayout;
+
+    private List<RSSModel> feedList;
+    List<RSSModel> items = new ArrayList<>();
 
 
     public TabPodcast() {
@@ -47,126 +49,153 @@ public class TabPodcast extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tab_podcast, container, false);
 
-        rss_feed = view.findViewById(R.id.rss_feed);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        swipeLayout = view.findViewById(R.id.swipeRefreshLayout);
 
-        title = new ArrayList<>();
-        link = new ArrayList<>();
-        description = new ArrayList<>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        //Call fetchFeed on creation
+        new FetchFeed().execute((Void) null);
 
-        rss_feed.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //call fetchFeed when user refreshes page
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-
-                final Uri podcastUri = Uri.parse(link.get(position));
-
-                MediaPlayer podcast = new MediaPlayer();
-                podcast.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
-                String podcast1 = podcastUri.toString();
-
-                try {
-                    podcast.setDataSource(podcast1);
-                    podcast.prepare();
-                    podcast.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-//
+            public void onRefresh() {
+                new FetchFeed().execute((Void) null);
             }
         });
 
 
-        new ProcessInBackground().execute();
 
         return view;
     }
 
-    public InputStream getInputStream(URL url){
-        try{
-            return url.openConnection().getInputStream();
-        }catch(IOException e){
-            return null;
-        }
-    }
 
-    public class ProcessInBackground extends AsyncTask<Integer, Void, Exception>
-    {
-        ProgressBar progressBar = new ProgressBar(getActivity());
-        Exception exception = null;
+    private class FetchFeed extends AsyncTask<Void, Void, Boolean> {
+
+        //String to contain RSS url
+        private String urlLink;
 
         @Override
         protected void onPreExecute() {
-            super.onPreExecute();
-
-            progressBar.setVisibility(View.VISIBLE);
+            //On pre execute display the refreshing wheel
+            swipeLayout.setRefreshing(true);
         }
 
         @Override
-        protected Exception doInBackground(Integer... integers) {
+        protected Boolean doInBackground(Void... voids) {
 
-            try{
-                //Defines RSS URL
-                URL url = new URL("https://www.villagebelfast.com/new-blog?format=rss");
+            try {
+                //Set string to RSS url
+                urlLink = "https://www.villagebelfast.com/new-blog?format=rss";
 
-                //Helps to retrieve data from xml document
-                XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+                //URL item equal to the RSS string
+                URL url = new URL(urlLink);
 
-                //Doesn't support XML namespaces
-                factory.setNamespaceAware(true);
+                //Used to read data from a source
+                InputStream inputStream = url.openConnection().getInputStream();
 
-                //New instance of xml pull parser using currently configured factory features
-                XmlPullParser xml = factory.newPullParser();
-
-                //Set pull parser to the url
-                xml.setInput(getInputStream(url), "UTF_8");
-
-                boolean insideItem=false;
-
-                int type = xml.getEventType();
-
-                while(type != XmlPullParser.END_DOCUMENT){
-                    if(type == XmlPullParser.START_TAG){
-                        if(xml.getName().equalsIgnoreCase("item")){
-                            insideItem = true;
-                        }else if (xml.getName().equalsIgnoreCase("title")){
-                            if(insideItem){
-                                title.add(xml.nextText());
-                            }
-                        }else if (xml.getName().equalsIgnoreCase("description")){
-                            if(insideItem){
-                                description.add(xml.nextText());
-                            }
-                        }else if(xml.getName().equalsIgnoreCase("enclosure")){
-                            if(insideItem){
-                                String podcastUrl = xml.getAttributeValue(null, "url");
-                                link.add(podcastUrl);
-                            }
-                        }
-                    }else if(type == XmlPullParser.END_TAG && xml.getName().equalsIgnoreCase("title")){
-                        insideItem = false;
-                    }
-
-                    type = xml.next();
-                }
-
-            }catch(XmlPullParserException | IOException e){
-                exception = e;
+                //feed list array equal to the method parse feed
+                feedList = parseFeed(inputStream);
+                return true;
+            } catch (IOException e) {
+                Log.e(TAG, "Error", e);
+            } catch (XmlPullParserException e) {
+                Log.e(TAG, "Error", e);
             }
-            return exception;
+            return false;
         }
 
         @Override
-        protected void onPostExecute(Exception s) {
-            super.onPostExecute(s);
-
-            ArrayAdapter<String> titleAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, title);
-
-            rss_feed.setAdapter(titleAdapter);
-
-            progressBar.setVisibility(View.GONE);
+        protected void onPostExecute(Boolean success) {
+            //Set the refreshing icon to false as page has loaded
+            swipeLayout.setRefreshing(false);
+                // Fill RecyclerView
+                recyclerView.setAdapter(new RssFeedAdapter(feedList));
         }
     }
 
+    public List<RSSModel> parseFeed(InputStream inputStream) throws XmlPullParserException,
+            IOException {
+        String title = null;
+        String link = null;
+        String description = null;
+        boolean inItem = false;
+        int amount = 0;
 
+
+            try {
+                //Create instance of XmlPullParser and set the input to the input stream
+                XmlPullParser pullParser = Xml.newPullParser();
+                pullParser.setInput(inputStream, null);
+
+                    //Ensure the document has not ended and no more than 12 objects have been pulled (Performance)
+                    while (pullParser.next() != XmlPullParser.END_DOCUMENT  && amount <12) {
+                        int eventType = pullParser.getEventType();
+
+                        //Returns the name of the current element
+                        //If it is null skip
+                        String name = pullParser.getName();
+                        if (name == null)
+                            continue;
+
+                        //If it is the End Tag set in item to false
+                        if (eventType == XmlPullParser.END_TAG) {
+                            if (name.equalsIgnoreCase("item")) {
+                                inItem = false;
+                            }
+                            continue;
+                        }
+
+                        //If it is the Start Tag set in item to true
+                        if (eventType == XmlPullParser.START_TAG) {
+                            if (name.equalsIgnoreCase("item")) {
+                                inItem = true;
+                                continue;
+                            }
+                        }
+
+                        //Set empty string result
+                        String result = "";
+
+                        //If the next item is text set result to text and move to next tag
+                        if (pullParser.next() == XmlPullParser.TEXT) {
+                            result = pullParser.getText();
+                            pullParser.nextTag();
+                        }
+
+                        //Set the title, link and description to the string pulled from the rss feed
+                            if (name.equalsIgnoreCase("title")) {
+                                title = result;
+                            } else if (name.equalsIgnoreCase("enclosure")) {
+                                String podcastUrl = pullParser.getAttributeValue(null, "url");
+                                link = podcastUrl;
+                            } else if (name.equalsIgnoreCase("description")) {
+                                description = Html.fromHtml(result).toString();
+                            }
+
+                            //If all items have a value, create a new item model and add the items
+                            if (title != null && link != null && description != null) {
+                                if (inItem) {
+                                    RSSModel item = new RSSModel(title, link, description);
+                                    items.add(item);
+
+                                    //Amount +1
+                                    amount++;
+                                }
+
+                                //Reset strings to null
+                                title = null;
+                                link = null;
+                                description = null;
+                                inItem = false;
+                            }
+                        }
+
+                return items;
+            }
+        finally {
+            inputStream.close();
+        }
+    }
 }
