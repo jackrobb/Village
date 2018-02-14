@@ -73,5 +73,8 @@
     <string name="note_content">Note Content</string>
     <string name="note_time">Note Timestamp</string>
 
+    <!--Podcast-->
+    <string name="content">Content</string>
+
 
 </resources>

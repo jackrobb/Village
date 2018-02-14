@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context="jack.village.PodcastPlayer">
+
+    <ImageView
+        android:contentDescription="@string/logo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
+        android:src="@drawable/village_logo" />
+
+    <TextView
+        android:id="@+id/podcastTitle"
+        android:layout_above="@id/playButton"
+        android:paddingBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:textColor="@color/colorAccent"
+        android:layout_height="wrap_content" />
+
+
+    <ImageButton
+        android:id="@+id/playButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_play"
+        android:layout_alignParentBottom="true"/>
+
+</RelativeLayout>
