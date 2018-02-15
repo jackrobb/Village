@@ -1,6 +1,9 @@
 package jack.village;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +16,7 @@ import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -54,14 +58,25 @@ public class TabPodcast extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        //Call fetchFeed on creation
-        new FetchFeed().execute((Void) null);
+        //If there is an internet connection Call fetchFeed on creation
+        if (internet_connection()) {
+            new FetchFeed().execute((Void) null);
+        }else
+        {
+            Toast.makeText(getContext(), "Internet Connection Required", Toast.LENGTH_SHORT).show();
+        }
 
-        //call fetchFeed when user refreshes page
+        //If there is an internet connection call fetchFeed when user refreshes page
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if (internet_connection()) {
                 new FetchFeed().execute((Void) null);
+                }else
+                {
+                    Toast.makeText(getContext(), "Internet Connection Required", Toast.LENGTH_SHORT).show();
+                    swipeLayout.setRefreshing(false);
+                }
             }
         });
 
@@ -197,5 +212,16 @@ public class TabPodcast extends Fragment {
         finally {
             inputStream.close();
         }
+    }
+
+
+    //Method to check if the device has an internet connection
+    boolean internet_connection(){
+        ConnectivityManager connectionManager = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = connectionManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+
     }
 }
