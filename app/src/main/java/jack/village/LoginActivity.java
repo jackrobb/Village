@@ -13,6 +13,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -38,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.textViewSignup).setOnClickListener(this);
         findViewById(R.id.textViewResetPassword).setOnClickListener(this);
         findViewById(R.id.buttonLogin).setOnClickListener(this);
+        findViewById(R.id.guestLogin).setOnClickListener(this);
     }
 
     private void userLogin(){
@@ -91,6 +93,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
+    public void guestLogin() {
+
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            finish();
+                            Intent j = new Intent(LoginActivity.this, MainActivity.class);
+                            j.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(j);
+                        } else {
+                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+
+                        // ...
+                    }
+                });
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -114,6 +136,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             case R.id.textViewResetPassword:
                 Intent reset = new Intent(this, ResetPasswordActivity.class);
                 startActivity(reset);
+                break;
+
+            case R.id.guestLogin:
+                guestLogin();
                 break;
 
             case R.id.buttonLogin:

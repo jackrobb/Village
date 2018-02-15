@@ -13,6 +13,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity{
 
+    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +67,15 @@ public class MainActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        //Used to initiate menu containing logout and update button
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser().isAnonymous()) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.guest_menu, menu);
+        }else {
+            //Used to initiate menu containing logout and update button
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu, menu);
+        }
 
         return true;
     }
@@ -89,6 +97,10 @@ public class MainActivity extends AppCompatActivity{
                 //Open update account activity
             case R.id.menuChange:
                 startActivity(new Intent(this, UpdateAccountActivity.class));
+                break;
+
+            case R.id.menuCreate:
+                startActivity(new Intent(this, SignUpActivity.class));
                 break;
         }
 

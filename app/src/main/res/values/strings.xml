@@ -24,6 +24,7 @@
     <string name="forgot">Forgotten Password?</string>
     <string name="already">Already have an account? Login</string>
     <string name="signup_btn">Sign Up</string>
+    <string name="guest">Guest Login</string>
 
     <!--Update Account-->
     <string name="new_email">Enter new email</string>
@@ -35,6 +36,7 @@
     <string name="note">Note</string>
     <string name="create_note">Create Note</string>
     <string name="reset_password">Reset Password</string>
+    <string name="logged">You must be logged in to use this feature.</string>
 
     <!--Tab Contacts-->
     <string name="church_address">25 Upper Newtownards Road \n Belfast \n BT4 3HT</string>

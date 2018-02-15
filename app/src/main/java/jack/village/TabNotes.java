@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,6 +37,8 @@ public class TabNotes extends Fragment implements View.OnClickListener{
         private FirebaseAuth auth;
         private DatabaseReference notesDatabase;
 
+        private TextView logged;
+
         ProgressBar progressBar;
 
 
@@ -56,6 +60,8 @@ public class TabNotes extends Fragment implements View.OnClickListener{
 
             progressBar = view.findViewById(R.id.progressbar);
 
+            logged = view.findViewById(R.id.loggedIn);
+
             //3 Notes per vertical line in order by newest first
             linearLayoutManager = new LinearLayoutManager(getActivity(), VERTICAL, true);
             linearLayoutManager.setStackFromEnd(true);
@@ -67,13 +73,20 @@ public class TabNotes extends Fragment implements View.OnClickListener{
             //Ensure the user is logged in, if they are get all their current notes
             auth = FirebaseAuth.getInstance();
             if (auth.getCurrentUser() != null) {
-                notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(auth.getCurrentUser().getUid());
+                if (auth.getCurrentUser().isAnonymous()) {
+                    createNote.hide();
+                    logged.setText(R.string.logged);
+                } else {
+                    notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(auth.getCurrentUser().getUid());
 
-                //Allow access to notes offline
-                notesDatabase.keepSynced(true);
+                    //Allow access to notes offline
+                    notesDatabase.keepSynced(true);
+
+                    loadData();
+                }
             }
 
-        loadData();
+
         return view;
     }
 
