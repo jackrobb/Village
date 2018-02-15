@@ -70,7 +70,7 @@ public class TabPodcast extends Fragment {
         return view;
     }
 
-
+//    AsyncTask allows the application to perform background tasks and publish results
     private class FetchFeed extends AsyncTask<Void, Void, Boolean> {
 
         //String to contain RSS url
@@ -95,7 +95,7 @@ public class TabPodcast extends Fragment {
                 //Used to read data from a source
                 InputStream inputStream = url.openConnection().getInputStream();
 
-                //feed list array equal to the method parse feed
+                //feed list array equal to the results of the method parse feed
                 feedList = parseFeed(inputStream);
                 return true;
             } catch (IOException e) {
