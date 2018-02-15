@@ -35,7 +35,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginStart="10dp"
             android:alpha="0.3"
-            android:background="@color/black" />
+            android:background="@color/colorAccent" />
 
         <EditText
             android:id="@+id/newNoteContent"
@@ -55,7 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/white"
             android:text="@string/create_note"/>
 
     </LinearLayout>

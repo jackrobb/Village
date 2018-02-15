@@ -10,7 +10,7 @@
         android:id="@+id/noteCard"
         android:layout_width="match_parent"
         android:layout_height="128dp"
-        android:layout_margin="5dp"
+        android:layout_margin="10dp"
         android:clickable="true"
         android:focusable="true"
         android:maxHeight="128dp"
@@ -33,7 +33,7 @@
                 android:maxLines="1"
                 android:scrollHorizontally="false"
                 android:text="@string/note_title"
-                android:textColor="@android:color/black"
+                android:textColor="@color/colorAccent"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
@@ -48,7 +48,7 @@
                 android:textSize="14sp"
                 android:scrollHorizontally="false"
                 android:text="@string/note_content"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/noteCardTime"

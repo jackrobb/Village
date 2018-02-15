@@ -31,8 +31,8 @@
                 android:hint="@string/new_email"
                 android:inputType="textEmailAddress"
                 android:paddingBottom="15dp"
-                android:textColor="@color/colorAccent"
-                android:textColorHint="@color/colorAccent" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/white" />
 
             <EditText
                 android:id="@+id/changePassword"
@@ -42,8 +42,8 @@
                 android:hint="@string/new_password"
                 android:inputType="textPassword"
                 android:paddingBottom="15dp"
-                android:textColor="@color/colorAccent"
-                android:textColorHint="@color/colorAccent" />
+                android:textColor="@color/white"
+                android:textColorHint="@color/white" />
 
             <Button
                 android:id="@+id/submitChange"
@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="7dp"
-                android:background="@color/colorAccent"
+                android:background="@color/white"
                 android:onClick="change"
                 android:text="@string/update_btn"
                 android:textAllCaps="false"
