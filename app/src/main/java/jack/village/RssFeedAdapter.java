@@ -21,6 +21,7 @@ public class RssFeedAdapter extends RecyclerView.Adapter<RssFeedAdapter.viewHold
     private List<RSSModel> rssModels;
     String podcast1;
     String title;
+    String description;
 
 
     public static class viewHolder extends RecyclerView.ViewHolder {
@@ -59,15 +60,24 @@ public class RssFeedAdapter extends RecyclerView.Adapter<RssFeedAdapter.viewHold
             @Override
             public void onClick(View view) {
 
+                //Get the Link set it to a string
                 Uri podcastUri = Uri.parse(RSSModel.link);
                 podcast1 = podcastUri.toString();
+
+                //Get the title and set it to a string
                 Uri titleUri = Uri.parse(RSSModel.title);
                 title = titleUri.toString();
 
+                //Get the description and set it to a string
+                Uri descriptionUri = Uri.parse(RSSModel.description);
+                description = descriptionUri.toString();
+
+                //New intent to start podcast player, passing the data through with the intent
                 Context context = view.getContext();
                 Intent intent = new Intent(context, PodcastPlayer.class);
                 intent.putExtra("title", title);
                 intent.putExtra("url", podcast1);
+                intent.putExtra("description", description);
                 context.startActivity(intent);
             }
         });
