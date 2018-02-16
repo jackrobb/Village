@@ -2,6 +2,7 @@ package jack.village;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -201,8 +203,19 @@ public class TabContact extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+
+            //Ensure the button was not pressed by accident
             case R.id.phone:
-                onCall();
+                new AlertDialog.Builder(getActivity())
+                        .setMessage("Call Village Church?")
+                        .setCancelable(false)
+                        .setNegativeButton("Cancel", null)
+                        .setPositiveButton("Call", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                TabContact.this.onCall();
+                            }
+                        })
+                        .show();
                 break;
             case R.id.facebook:
                 Intent facebookIntent = new Intent(Intent.ACTION_VIEW);
