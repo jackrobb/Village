@@ -1,6 +1,8 @@
 package jack.village;
 
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -156,18 +158,18 @@ public class NewNoteActivity extends AppCompatActivity {
                 final DatabaseReference newNote = notesDatabase.push();
 
                 //Used for storing key and value pairs
-                final Map noteMap = new HashMap();
+                final Map newMap = new HashMap();
 
                 //Add the note content to the note map
-                noteMap.put("title", title);
-                noteMap.put("content", content);
-                noteMap.put("timestamp", ServerValue.TIMESTAMP);
+                newMap.put("title", title);
+                newMap.put("content", content);
+                newMap.put("timestamp", ServerValue.TIMESTAMP);
 
                 Thread mainThread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         //Sets the newNote to the note map values, alerts user if successful or not
-                        newNote.setValue(noteMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        newNote.setValue(newMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
@@ -192,7 +194,16 @@ public class NewNoteActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.noteDelete:
                     if (exists) {
-                        deleteNote();
+                        new AlertDialog.Builder(this)
+                                .setMessage("Are you sure you want to delete this note?")
+                                .setCancelable(false)
+                                .setNegativeButton("Cancel", null)
+                                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        NewNoteActivity.this.deleteNote();
+                                    }
+                                })
+                                .show();
                     } else {
                         Toast.makeText(this, "Nothing to delete", Toast.LENGTH_SHORT).show();
                     }
