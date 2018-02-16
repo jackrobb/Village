@@ -3,11 +3,11 @@
 
     <item
         android:id="@+id/menuCreate"
-        android:title="Create Account" />
+        android:title="@string/create" />
 
     <item
         android:id="@+id/menuLogout"
-        android:title="Logout" />
+        android:title="@string/login" />
 
 
 </menu>

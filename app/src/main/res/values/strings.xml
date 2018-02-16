@@ -3,6 +3,10 @@
     <string name="app_name">Village</string>
     <string name="action_settings">Settings</string>
 
+    <!--Menu-->
+    <string name="create">Create Account</string>
+    <string name="logout">Logout</string>
+
     <!--Tab strings-->
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
@@ -24,7 +28,7 @@
     <string name="forgot">Forgotten Password?</string>
     <string name="already">Already have an account? Login</string>
     <string name="signup_btn">Sign Up</string>
-    <string name="guest">Guest Login</string>
+    <string name="guest">Continue without an account</string>
 
     <!--Update Account-->
     <string name="new_email">Enter new email</string>

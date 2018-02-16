@@ -46,6 +46,8 @@
             android:maxLines="4"
             android:textSize="14sp"
             android:scrollHorizontally="false"
+            android:drawableStart="@drawable/ic_action_play_circle"
+            android:drawablePadding="10dp"
             android:textColor="@color/black" />
 
     </LinearLayout>

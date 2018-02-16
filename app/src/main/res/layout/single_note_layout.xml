@@ -48,6 +48,8 @@
                 android:textSize="14sp"
                 android:scrollHorizontally="false"
                 android:text="@string/note_content"
+                android:drawableEnd="@drawable/ic_action_edit"
+                android:drawablePadding="10dp"
                 android:textColor="@color/black" />
 
             <TextView

@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
     android:background="@color/colorPrimary"
     tools:context="jack.village.PodcastPlayer">
 
@@ -20,9 +22,10 @@
         android:id="@+id/podcastTitle"
         android:layout_above="@id/podcastDescription"
         android:paddingBottom="5dp"
+        android:textSize="17sp"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="@color/colorAccent"
         android:layout_height="wrap_content" />
 
 
@@ -33,6 +36,7 @@
         android:layout_above="@id/playButton"
         android:layout_marginBottom="1dp"
         android:padding="10dp"
+        android:textSize="14sp"
         android:scrollHorizontally="false"
         android:ellipsize="end"
         android:maxLines="4"
