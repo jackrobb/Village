@@ -8,6 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@color/colorPrimaryLight"
     tools:context="jack.village.ConnectionCardActivity">
 
 
@@ -19,7 +20,7 @@
         android:padding="15dp"
         android:text="@string/connection_card"
         android:textAlignment="center"
-        android:textColor="@color/colorPrimaryDark" />
+        android:textColor="@color/colorAccent" />
 
     <EditText
         android:id="@+id/name"
@@ -27,6 +28,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/name"
         android:inputType="textPersonName"
+        android:padding="15dp"
         android:textCursorDrawable="@drawable/cursor"
         android:ems="10" />
 
@@ -36,6 +38,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/birthday"
+        android:padding="15dp"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="date" />
 
@@ -45,6 +48,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/address"
+        android:padding="15dp"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="textPostalAddress" />
 
@@ -54,6 +58,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/email"
+        android:padding="15dp"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="textEmailAddress" />
 
@@ -63,12 +68,14 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/phone"
+        android:padding="15dp"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="phone" />
 
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="15dp"
         android:orientation="horizontal">
 
         <RadioButton
@@ -186,6 +193,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/comments"
+        android:padding="15dp"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="text" />
 

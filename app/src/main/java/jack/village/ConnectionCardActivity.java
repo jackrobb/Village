@@ -172,6 +172,12 @@ public class ConnectionCardActivity extends AppCompatActivity implements View.On
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
+
 
     @Override
     public void onClick(View view) {
