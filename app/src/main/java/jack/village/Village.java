@@ -5,7 +5,7 @@ import android.app.Application;
 import com.google.firebase.database.FirebaseDatabase;
 
 /**
- * Created by jack on 08/02/2018.
+ * Created by jack on 08/02/2018
  */
 
 public class Village extends Application{
@@ -18,3 +18,4 @@ public class Village extends Application{
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 }
+

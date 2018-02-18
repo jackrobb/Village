@@ -85,6 +85,7 @@ public class NewNoteActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         //Gets reference to the current users notes location of the database
+        //Creates database table for Notes
         notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(mAuth.getCurrentUser().getUid());
 
 
