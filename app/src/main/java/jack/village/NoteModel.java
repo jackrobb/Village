@@ -1,7 +1,7 @@
 package jack.village;
 
 /**
- * Created by jack on 01/02/2018.
+ * Created by jack on 01/02/2018
  */
 
 public class NoteModel {
@@ -46,4 +46,5 @@ public class NoteModel {
     public void setNoteTime(String noteTime) {
         this.noteTime = noteTime;
     }
+
 }

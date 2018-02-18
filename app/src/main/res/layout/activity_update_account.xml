@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="jack.village.UpdateAccountActivity">
 
@@ -23,27 +24,41 @@
             android:paddingRight="15dp"
             android:id="@+id/linearLayout">
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/white">
+
             <EditText
                 android:id="@+id/changeEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
                 android:hint="@string/new_email"
                 android:inputType="textEmailAddress"
                 android:paddingBottom="15dp"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
 
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="@color/white"
+                android:textColorHint="@color/white">
+
             <EditText
                 android:id="@+id/changePassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
                 android:hint="@string/new_password"
                 android:inputType="textPassword"
                 android:paddingBottom="15dp"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <Button
                 android:id="@+id/submitChange"

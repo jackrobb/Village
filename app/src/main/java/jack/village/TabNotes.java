@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import static android.widget.GridLayout.TOP;
 import static android.widget.GridLayout.VERTICAL;
 
 /**
@@ -36,6 +37,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
 
         private FirebaseAuth auth;
         private DatabaseReference notesDatabase;
+        private FirebaseRecyclerAdapter<NoteModel, NoteViewHolder> firebaseRecyclerAdapter;
 
         private TextView logged;
 
@@ -90,12 +92,6 @@ public class TabNotes extends Fragment implements View.OnClickListener{
         return view;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
-
     private void loadData() {
         progressBar.setVisibility(View.VISIBLE);
 
@@ -103,7 +99,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
         Query query = notesDatabase.orderByChild("timestamp");
 
         //Recycler Adaptor uses NoteModel class and th single note layout
-        FirebaseRecyclerAdapter<NoteModel, NoteViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<NoteModel, NoteViewHolder>(
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<NoteModel, NoteViewHolder>(
 
                 //Set the FirebaseRecyclerAdaptor to use note model and note view holder class and single note layout
                 NoteModel.class,
@@ -113,7 +109,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
 
         ) {
             @Override
-            protected void populateViewHolder(final NoteViewHolder viewHolder, NoteModel model, int position) {
+            protected void populateViewHolder(final NoteViewHolder viewHolder, NoteModel model, final int position) {
                 final String noteId = getRef(position).getKey();
 
                 progressBar.setVisibility(View.GONE);
@@ -158,6 +154,13 @@ public class TabNotes extends Fragment implements View.OnClickListener{
 
         //Fills the note list with the adaptor content
         noteList.setAdapter(firebaseRecyclerAdapter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //Scroll to the top of the list view to display latest post
+        linearLayoutManager.scrollToPosition(firebaseRecyclerAdapter.getItemCount() - 1);
     }
 
     @Override

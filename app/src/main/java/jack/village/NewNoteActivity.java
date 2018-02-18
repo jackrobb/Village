@@ -5,14 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,12 +26,9 @@ import java.util.Map;
 
 public class NewNoteActivity extends AppCompatActivity {
 
-    private Button newNoteButton;
     private EditText newNoteTitle;
     private EditText newNoteContent;
-    private Toolbar toolbar;
 
-    private FirebaseAuth mAuth;
     private DatabaseReference notesDatabase;
 
     private String noteID;
@@ -63,50 +55,41 @@ public class NewNoteActivity extends AppCompatActivity {
             noteID = getIntent().getStringExtra("noteId");
 
             //Set boolean to true is note exists
-            if (!noteID.trim().equals("")) {
-                exists = true;
-            } else {
-                exists = false;
-            }
+            exists = !noteID.trim().equals("");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        newNoteButton = findViewById(R.id.newNoteButton);
         newNoteTitle = findViewById(R.id.newNoteTitle);
         newNoteContent = findViewById(R.id.newNoteContent);
-        toolbar = findViewById(R.id.newNoteToolBar);
+        Toolbar toolbar = findViewById(R.id.newNoteToolBar);
 
         //Set toolbar to custom toolbar
         setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         //Obtain an instance of the FirebaseAuth class
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         //Gets reference to the current users notes location of the database
         //Creates database table for Notes
-        notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(mAuth.getCurrentUser().getUid());
-
-
-        newNoteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String title = newNoteTitle.getText().toString().trim();
-                String content = newNoteContent.getText().toString().trim();
-
-                //If both fields are filled it will call method createNote
-                if(!TextUtils.isEmpty(title) && !TextUtils.isEmpty(content)){
-                    createNote(title, content);
-                    finish();
-                }else{
-                    Toast.makeText(getApplicationContext(), "Complete All Fields", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
+        if(mAuth.getCurrentUser() != null ) {
+            notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(mAuth.getCurrentUser().getUid());
+        }
         //Calls method put data
         putData();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        String title = newNoteTitle.getText().toString().trim();
+        String content = newNoteContent.getText().toString().trim();
+        createNote(title, content);
+        finish();
     }
 
     private void putData() {
@@ -121,9 +104,6 @@ public class NewNoteActivity extends AppCompatActivity {
 
                         newNoteTitle.setText(title);
                         newNoteContent.setText(content);
-
-                        //Button value changed from create note to update note
-                        newNoteButton.setText("Update Note");
                     }
                 }
 
@@ -208,6 +188,10 @@ public class NewNoteActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(this, "Nothing to delete", Toast.LENGTH_SHORT).show();
                     }
+                    break;
+
+                case android.R.id.home:
+                    onBackPressed();
                     break;
             }
 
