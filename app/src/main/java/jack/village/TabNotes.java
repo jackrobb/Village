@@ -167,8 +167,13 @@ public class TabNotes extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-        //Scroll to the top of the list view to display latest post
-        linearLayoutManager.scrollToPosition(firebaseRecyclerAdapter.getItemCount() - 1);
+        if (auth.getCurrentUser().isAnonymous()) {
+            createNote.hide();
+            logged.setText(R.string.logged);
+        }else {
+            //Scroll to the top of the list view to display latest post
+            linearLayoutManager.scrollToPosition(firebaseRecyclerAdapter.getItemCount() - 1);
+        }
     }
 
     @Override

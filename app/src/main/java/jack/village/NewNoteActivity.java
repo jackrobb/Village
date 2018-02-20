@@ -55,7 +55,7 @@ public class NewNoteActivity extends AppCompatActivity {
             noteID = getIntent().getStringExtra("noteId");
 
             //Set boolean to true is note exists
-            exists = !noteID.trim().equals("");
+            exists = !noteID.trim().isEmpty();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -85,11 +85,21 @@ public class NewNoteActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        String title = newNoteTitle.getText().toString().trim();
-        String content = newNoteContent.getText().toString().trim();
-        createNote(title, content);
-        finish();
+            String title = newNoteTitle.getText().toString().trim();
+            String content = newNoteContent.getText().toString().trim();
+            if (title.isEmpty() && content.isEmpty()){
+                if(exists) {
+                    deleteNote();
+                }
+                super.onBackPressed();
+                finish();
+            }else if (title.isEmpty()){
+                Toast.makeText(NewNoteActivity.this, "Note must have title", Toast.LENGTH_SHORT).show();
+            }else {
+                createNote(title, content);
+                super.onBackPressed();
+                finish();
+            }
     }
 
     private void putData() {
@@ -201,17 +211,16 @@ public class NewNoteActivity extends AppCompatActivity {
     private void deleteNote() {
         finish();
         //Get note by id and remove it from database, alert user on completion
-        notesDatabase.child(noteID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(NewNoteActivity.this, "Note Deleted", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(NewNoteActivity.this, "ERROR: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+            notesDatabase.child(noteID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(NewNoteActivity.this, "Note Deleted", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(NewNoteActivity.this, "ERROR: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
-
+            });
     }
 
 }

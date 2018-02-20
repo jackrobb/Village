@@ -22,6 +22,11 @@
         android:textAlignment="center"
         android:textColor="@color/colorAccent" />
 
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/colorAccent">
+
     <EditText
         android:id="@+id/name"
         android:layout_width="match_parent"
@@ -31,6 +36,13 @@
         android:padding="15dp"
         android:textCursorDrawable="@drawable/cursor"
         android:ems="10" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/colorAccent">
 
     <EditText
         android:id="@+id/dob"
@@ -42,6 +54,13 @@
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="date" />
 
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/colorAccent">
+
     <EditText
         android:id="@+id/address"
         android:layout_width="match_parent"
@@ -51,6 +70,13 @@
         android:padding="15dp"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="textPostalAddress" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/colorAccent">
 
     <EditText
         android:id="@+id/email"
@@ -62,6 +88,13 @@
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="textEmailAddress" />
 
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/colorAccent">
+
     <EditText
         android:id="@+id/phone"
         android:layout_width="match_parent"
@@ -71,6 +104,8 @@
         android:padding="15dp"
         android:textCursorDrawable="@drawable/cursor"
         android:inputType="phone" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <RadioGroup
         android:layout_width="match_parent"
@@ -187,6 +222,11 @@
         android:buttonTint="@color/colorPrimaryDark"
         android:text="@string/contacted" />
 
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="@color/colorAccent">
+
     <EditText
         android:id="@+id/comments"
         android:layout_width="match_parent"
@@ -195,7 +235,9 @@
         android:hint="@string/comments"
         android:padding="15dp"
         android:textCursorDrawable="@drawable/cursor"
-        android:inputType="text" />
+        android:inputType="textMultiLine" />
+
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/submit"
