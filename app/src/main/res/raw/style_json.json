@@ -8,18 +8,10 @@
     ]
   },
   {
-    "elementType": "labels.icon",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#757575"
+        "color": "#EEEEEE"
       }
     ]
   },
@@ -27,7 +19,7 @@
     "elementType": "labels.text.stroke",
     "stylers": [
       {
-        "color": "#212121"
+        "color": "#000000"
       }
     ]
   },
@@ -68,10 +60,27 @@
   },
   {
     "featureType": "poi",
+    "stylers": [
+      {
+        "visibility": "off"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#757575"
+        "color": "#EEEEEE"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#000000"
       }
     ]
   },
@@ -80,7 +89,7 @@
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#181818"
+        "color": "#474747"
       }
     ]
   },
@@ -89,7 +98,7 @@
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#616161"
+        "color": "#EEEEEE"
       }
     ]
   },
@@ -98,18 +107,7 @@
     "elementType": "labels.text.stroke",
     "stylers": [
       {
-        "color": "#1b1b1b"
-      }
-    ]
-  },
-  {
-    "featureType": "road",
-    "stylers": [
-      {
         "color": "#000000"
-      },
-      {
-        "visibility": "on"
       }
     ]
   },
@@ -118,7 +116,7 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "color": "#000000"
+        "color": "#E0E0E0"
       }
     ]
   },
@@ -145,7 +143,7 @@
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#373737"
+        "color": "#E0E0E0"
       }
     ]
   },
@@ -154,7 +152,7 @@
     "elementType": "geometry.fill",
     "stylers": [
       {
-        "color": "#000000"
+        "color": "#E0E0E0"
       }
     ]
   },
@@ -163,22 +161,13 @@
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#ffffff"
+        "color": "#EEEEEE"
       }
     ]
   },
   {
-    "featureType": "road.highway",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#3c3c3c"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "geometry.fill",
+    "featureType": "road.arterial",
+    "elementType": "labels.text.stroke",
     "stylers": [
       {
         "color": "#000000"
@@ -187,25 +176,25 @@
   },
   {
     "featureType": "road.highway",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#ffffff"
-      }
-    ]
-  },
-  {
-    "featureType": "road.highway.controlled_access",
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#4e4e4e"
+        "color": "#E0E0E0"
       }
     ]
   },
   {
-    "featureType": "road.highway.controlled_access",
-    "elementType": "geometry.fill",
+    "featureType": "road.highway",
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#EEEEEE"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "labels.text.stroke",
     "stylers": [
       {
         "color": "#000000"
@@ -214,10 +203,37 @@
   },
   {
     "featureType": "road.highway.controlled_access",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#E0E0E0"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway.controlled_access",
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#ffffff"
+        "color": "#EEEEEE"
+      }
+    ]
+  },
+  {
+    "featureType": "road.highway.controlled_access",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#000000"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#E0E0E0"
       }
     ]
   },
@@ -226,7 +242,16 @@
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#ffffff"
+        "color": "#EEEEEE"
+      }
+    ]
+  },
+  {
+    "featureType": "road.local",
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#000000"
       }
     ]
   },

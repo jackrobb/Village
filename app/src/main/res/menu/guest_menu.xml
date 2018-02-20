@@ -6,7 +6,7 @@
         android:title="@string/create" />
 
     <item
-        android:id="@+id/menuLogout"
+        android:id="@+id/menuLogin"
         android:title="@string/login" />
 
 
