@@ -25,7 +25,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -70,12 +69,13 @@ public class TabContact extends Fragment implements View.OnClickListener{
 
 
                 //Customise map appearance
-                    googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.style_json));
+                googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.style_json));
 
 
                 // For dropping a marker at a point on the Map
                 LatLng village = new LatLng(54.597144, -5.885955);
                 googleMap.addMarker(new MarkerOptions().position(village).title("Village").snippet("Village Church Belfast: East"));
+
 
                 // For zooming automatically to the location of the marker
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(village).zoom(15).build();
@@ -165,9 +165,8 @@ public class TabContact extends Fragment implements View.OnClickListener{
 
     //Link to facebook application
     public String facebook(Context context) {
-        PackageManager packageManager = context.getPackageManager();
         try {
-            int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
+            getActivity().getPackageManager().getPackageInfo("com.facebook.katana", 0);
                 return "fb://facewebmodal/f?href=" + FACEBOOK_URL;
         } catch (PackageManager.NameNotFoundException e) {
             return FACEBOOK_URL; //normal web url
