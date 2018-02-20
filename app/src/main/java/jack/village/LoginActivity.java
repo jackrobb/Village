@@ -94,23 +94,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void guestLogin() {
+        finish();
+        Intent j = new Intent(LoginActivity.this, MainActivity.class);
+        j.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(j);
 
-        mAuth.signInAnonymously()
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            finish();
-                            Intent j = new Intent(LoginActivity.this, MainActivity.class);
-                            j.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(j);
-                        } else {
-                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
-                    }
-                });
     }
 
     @Override
