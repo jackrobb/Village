@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity{
     public boolean onCreateOptionsMenu(Menu menu) {
 
         auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser().isAnonymous()) {
+        if (auth.getCurrentUser() == null) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.guest_menu, menu);
         }else {
@@ -91,6 +91,10 @@ public class MainActivity extends AppCompatActivity{
                 FirebaseAuth.getInstance().signOut();
                 finishAffinity();
                 finish();
+                startActivity(new Intent(this, LoginActivity.class));
+                break;
+
+            case R.id.menuLogin:
                 startActivity(new Intent(this, LoginActivity.class));
                 break;
 
