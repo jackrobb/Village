@@ -6,7 +6,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.format.DateFormat;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,17 +86,13 @@ public class TabNotes extends Fragment implements View.OnClickListener{
             //Ensure the user is logged in, if they are get all their current notes
             auth = FirebaseAuth.getInstance();
             if (auth.getCurrentUser() != null) {
-                if (auth.getCurrentUser().isAnonymous()) {
-                    createNote.hide();
-                    logged.setText(R.string.logged);
-                } else {
                     notesDatabase = FirebaseDatabase.getInstance().getReference().child("Notes").child(auth.getCurrentUser().getUid());
 
                     //Allow access to notes offline
                     notesDatabase.keepSynced(true);
 
                     loadData();
-                }
+//                }
             }
 
 
@@ -167,9 +168,28 @@ public class TabNotes extends Fragment implements View.OnClickListener{
     @Override
     public void onResume() {
         super.onResume();
-        if (auth.getCurrentUser().isAnonymous()) {
+        if (auth.getCurrentUser() == null) {
             createNote.hide();
-            logged.setText(R.string.logged);
+
+            //Allows the user to click the text to access the login screen
+            String loggedIn = getResources().getString(R.string.logged);
+            SpannableString loginLink = new SpannableString(loggedIn);
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View textView) {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                }
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+            };
+            loginLink.setSpan(clickableSpan, 12, 21, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            logged.setText(loginLink);
+            logged.setMovementMethod(LinkMovementMethod.getInstance());
+            logged.setHighlightColor(getResources().getColor(R.color.colorAccent));
+
         }else {
             //Scroll to the top of the list view to display latest post
             linearLayoutManager.scrollToPosition(firebaseRecyclerAdapter.getItemCount() - 1);
