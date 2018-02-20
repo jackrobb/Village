@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 import static android.widget.GridLayout.TOP;
 import static android.widget.GridLayout.VERTICAL;
@@ -127,8 +133,10 @@ public class TabNotes extends Fragment implements View.OnClickListener{
                             viewHolder.setNoteContent(content);
 
                             //Sets the time for the current notes
-                            GetTime getTime = new GetTime();
-                            viewHolder.setNoteTime(getTime.getTime(Long.parseLong(timestamp)));
+                            Calendar calender = Calendar.getInstance(Locale.ENGLISH);
+                            calender.setTimeInMillis(Long.parseLong(timestamp));
+                            String date = DateFormat.format("dd-MM-yyyy, hh:mm a", calender).toString();
+                            viewHolder.setNoteTime(date);
 
                             //Each note is placed within a note card which is clickable, when the user selects it, it open the new note activity allowing them to edit it.
                             viewHolder.noteCard.setOnClickListener(new View.OnClickListener() {

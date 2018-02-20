@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 /**
- * Created by jack on 01/02/2018.
+ * Created by jack on 01/02/2018
  */
 
 public class NoteViewHolder extends ViewHolder {
