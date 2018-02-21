@@ -15,10 +15,8 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,12 +27,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
-import static android.widget.GridLayout.TOP;
 import static android.widget.GridLayout.VERTICAL;
 
 /**
@@ -143,7 +138,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
                             viewHolder.noteCard.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
-                                    Intent note = new Intent(getActivity(),  NewNoteActivity.class);
+                                    Intent note = new Intent(getActivity(),  NoteActivity.class);
                                     note.putExtra("noteId", noteId);
                                     startActivity(note);
                                 }
@@ -200,7 +195,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.createNote:
-                startActivity(new Intent(getActivity(), NewNoteActivity.class));
+                startActivity(new Intent(getActivity(), NoteActivity.class));
                 break;
         }
     }
