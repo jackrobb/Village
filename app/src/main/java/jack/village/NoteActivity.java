@@ -24,7 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NewNoteActivity extends AppCompatActivity {
+public class NoteActivity extends AppCompatActivity {
 
     private EditText newNoteTitle;
     private EditText newNoteContent;
@@ -94,7 +94,7 @@ public class NewNoteActivity extends AppCompatActivity {
                 super.onBackPressed();
                 finish();
             }else if (title.isEmpty()){
-                Toast.makeText(NewNoteActivity.this, "Note must have title", Toast.LENGTH_SHORT).show();
+                Toast.makeText(NoteActivity.this, "Note must have title", Toast.LENGTH_SHORT).show();
             }else {
                 createNote(title, content);
                 super.onBackPressed();
@@ -164,9 +164,9 @@ public class NewNoteActivity extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
-                                    Toast.makeText(NewNoteActivity.this, "Note Successfully Created", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(NoteActivity.this, "Note Successfully Created", Toast.LENGTH_SHORT).show();
                                 } else {
-                                    Toast.makeText(NewNoteActivity.this, "ERROR: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(NoteActivity.this, "ERROR: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
 
                             }
@@ -191,7 +191,7 @@ public class NewNoteActivity extends AppCompatActivity {
                                 .setNegativeButton("Cancel", null)
                                 .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        NewNoteActivity.this.deleteNote();
+                                        NoteActivity.this.deleteNote();
                                     }
                                 })
                                 .show();
@@ -215,9 +215,9 @@ public class NewNoteActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
-                        Toast.makeText(NewNoteActivity.this, "Note Deleted", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(NoteActivity.this, "Note Deleted", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(NewNoteActivity.this, "ERROR: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(NoteActivity.this, "ERROR: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
