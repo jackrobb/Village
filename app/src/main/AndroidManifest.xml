@@ -48,7 +48,7 @@
             android:name=".ResetPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NewNoteActivity"
+            android:name=".NoteActivity"
             android:label="New Note"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
