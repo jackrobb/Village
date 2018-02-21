@@ -19,23 +19,23 @@ import java.util.List;
 public class RssFeedAdapter extends RecyclerView.Adapter<RssFeedAdapter.viewHolder>{
 
     private List<RSSModel> rssModels;
-    String podcast1;
-    String title;
-    String description;
+    private String podcast1;
+    private String title;
+    private String description;
 
 
-    public static class viewHolder extends RecyclerView.ViewHolder {
+    static class viewHolder extends RecyclerView.ViewHolder {
         private View rssFeedView;
-        public CardView cardView;
+        CardView cardView;
 
-        public viewHolder(View v) {
+        viewHolder(View v) {
             super(v);
             rssFeedView = v;
             cardView = itemView.findViewById(R.id.podcastCard);
         }
     }
 
-    public RssFeedAdapter(List<RSSModel> RSSModels) {
+    RssFeedAdapter(List<RSSModel> RSSModels) {
         rssModels = RSSModels;
     }
 
@@ -44,8 +44,7 @@ public class RssFeedAdapter extends RecyclerView.Adapter<RssFeedAdapter.viewHold
     public viewHolder onCreateViewHolder(ViewGroup parent, int type) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.single_podcast_layout, parent, false);
-        viewHolder feedHolder = new viewHolder(v);
-        return feedHolder;
+        return new viewHolder(v);
 
 
     }
