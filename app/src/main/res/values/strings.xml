@@ -81,6 +81,7 @@
 
     <!--Podcast-->
     <string name="content">Content</string>
+    <string name="zero">00:00</string>
 
     <!--Home-->
     <string name="titleHome">JOINING GOD IN THE RENEWAL OF BELFAST.</string>
