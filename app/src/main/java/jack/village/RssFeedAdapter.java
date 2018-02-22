@@ -58,7 +58,6 @@ public class RssFeedAdapter extends RecyclerView.Adapter<RssFeedAdapter.viewHold
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //Get the Link set it to a string
                 Uri podcastUri = Uri.parse(RSSModel.link);
                 podcast1 = podcastUri.toString();

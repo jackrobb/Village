@@ -74,7 +74,8 @@
             android:value="@string/google_maps_key" />
 
         <activity android:name=".PodcastPlayer"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

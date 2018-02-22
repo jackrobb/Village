@@ -120,11 +120,13 @@ public class PodcastPlayer extends AppCompatActivity{
 
             if(mediaPlayer != null) {
 
-                String total = String.format(Locale.getDefault(), "%02d:%02d",
+                String total = String.format(Locale.getDefault(), "%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()) % 60,
                         TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()) % 60,
                         TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.getDuration() - mediaPlayer.getCurrentPosition()) % 60);
 
-                String current = String.format(Locale.getDefault(), "%02d:%02d",
+                String current = String.format(Locale.getDefault(), "%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours(mediaPlayer.getCurrentPosition()) % 60,
                         TimeUnit.MILLISECONDS.toMinutes(mediaPlayer.getCurrentPosition()) % 60,
                         TimeUnit.MILLISECONDS.toSeconds(mediaPlayer.getCurrentPosition()) % 60);
 
@@ -139,20 +141,17 @@ public class PodcastPlayer extends AppCompatActivity{
         }
     };
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        this.finish();
-        //Stop the media player when the user goes off the activity
+        //Stop the media player when the activity is destroyed
         if (mediaPlayer != null) {
             mediaPlayer.reset();
             mediaPlayer.release();
             mediaPlayer = null;
+
+            finish();
         }
     }
 
