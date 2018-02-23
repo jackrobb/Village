@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -145,13 +146,18 @@ public class PodcastPlayer extends AppCompatActivity{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        //Stop the media player when the activity is destroyed
+        onPause();
+        finish();
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
         if (mediaPlayer != null) {
             mediaPlayer.reset();
             mediaPlayer.release();
             mediaPlayer = null;
-
-            finish();
         }
     }
 
