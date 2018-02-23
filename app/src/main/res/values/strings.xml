@@ -15,6 +15,7 @@
     <string name="tab_label2">Contact</string>
     <string name="tab_label3">Notes</string>
     <string name="tab_label4">Podcasts</string>
+    <string name="tab_label5">Events</string>
 
     <!--Google Maps Key-->
     <string name="google_maps_key">AIzaSyAuTTD47CEAygKDloXAPHHaH4QP5yr_P4M</string>
@@ -88,5 +89,8 @@
     <string name="description">Village Church Belfast desires to be a Gospel-shaped community of people who love Jesus, each other, and our city of Belfast as we join God in the renewal of all things.</string>
     <string name="paragraph1">At Village we have three varying, but simple levels of gathering. Our Sunday gathering, when we all come together to worship God through scripture, music, and communion. During the week, we meet as smaller groups to share dinner together and to spend time reading, praying, and encouraging one another. We also meet in groups of 3 or 4 to further encourage and care for one another.</string>
     <string name="paragraph2">While these organised times of the church gathered are important, at Village we place a lot of emphasis on living life together in the every day and the ordinary – the church scattered. Church shouldn\'t be either/or, but both/and. In our love for Belfast, we are convinced that the Church is most effective when we operate as both the gathered and the scattered. We celebrate and worship together in the presence of God so that we may be empowered as His divine image-bearers to care for our city in our workplaces, pubs, cafes, commnity groups, and more.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

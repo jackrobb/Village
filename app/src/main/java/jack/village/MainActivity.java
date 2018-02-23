@@ -30,16 +30,19 @@ public class MainActivity extends AppCompatActivity{
         // Set the text for each tab header
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label1));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label2));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label5));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label3));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label4));
 
         // Tabs fill full layout
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
 
         //Allows users to flip left and right between tabs
         final ViewPager viewPager = findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
+        viewPager.setOffscreenPageLimit(6);
         viewPager.setAdapter(adapter);
 
         // Setting a listener for user interactions
