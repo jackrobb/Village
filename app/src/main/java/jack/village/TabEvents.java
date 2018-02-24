@@ -30,6 +30,7 @@ public class TabEvents extends Fragment {
 
         webView = view.findViewById(R.id.webView);
 
+        setRetainInstance(true);
 
         WiseWeWebClient myWebClient = new WiseWeWebClient();
         webView.setWebViewClient(myWebClient);
