@@ -1,6 +1,7 @@
 package jack.village;
 
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,8 @@ import android.view.MenuItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.EventListener;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -30,8 +33,8 @@ public class MainActivity extends AppCompatActivity{
         // Set the text for each tab header
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label1));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label2));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label5));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label3));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label5));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label4));
 
         // Tabs fill full layout
@@ -63,9 +66,9 @@ public class MainActivity extends AppCompatActivity{
 
             }
         });
-
-
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

@@ -28,9 +28,9 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return new TabContact();
             case 2:
-                return new TabEvents();
-            case 3:
                 return new TabNotes();
+            case 3:
+                return new TabEvents();
             case 4:
                 return new TabPodcast();
             default:
