@@ -1,8 +1,45 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/colorPrimaryLight"
     tools:context="jack.village.TabDonate">
 
+    <TextView
+        android:id="@+id/donate_title"
+        android:padding="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="wrap_content"
+        android:textSize="17sp"
+        android:layout_height="wrap_content"
+        android:text="@string/donateTitle"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"/>
 
-</FrameLayout>
+    <TextView
+        android:text="@string/donate"
+        android:id="@+id/donate"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/donate_title"/>
+
+    <NumberPicker
+        android:id="@+id/numberPicker"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/donate"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/buy_button"
+        android:text="Donate"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"/>
+
+</RelativeLayout>

@@ -91,7 +91,13 @@
     <string name="paragraph1">At Village we have three varying, but simple levels of gathering. Our Sunday gathering, when we all come together to worship God through scripture, music, and communion. During the week, we meet as smaller groups to share dinner together and to spend time reading, praying, and encouraging one another. We also meet in groups of 3 or 4 to further encourage and care for one another.</string>
     <string name="paragraph2">While these organised times of the church gathered are important, at Village we place a lot of emphasis on living life together in the every day and the ordinary – the church scattered. Church shouldn\'t be either/or, but both/and. In our love for Belfast, we are convinced that the Church is most effective when we operate as both the gathered and the scattered. We celebrate and worship together in the presence of God so that we may be empowered as His divine image-bearers to care for our city in our workplaces, pubs, cafes, commnity groups, and more.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="donateTitle">Giving</string>
+    <string name="donate">In Village we believe in the unfathomable and unending generosity of God through the Gospel in Jesus giving Himself up for us. We believe in the calling of the Church to respond in obedience to God\'s commands and his generosity, mercy and grace to the world. One way in which we demonstrate this is in the stewardship of our finances and open handed generosity with the gifts God has so graciously given to us.
+
+                            If you would like to support the work of Village in this way, simply enter the amount you would like to give, choose between a one-time or monthly gift, and then follow a few simple steps to process the donation.
+
+                            Alternatively, if you are interested in setting up a regular standing order from your bank, please click here to request more information.
+
+                            As a church we are committed to stewarding your giving towards God's mission of sharing the gospel and caring for those in material need. Thank you for partnering with us in this way. </string>
 
 </resources>
