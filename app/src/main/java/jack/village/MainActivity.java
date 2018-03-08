@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity{
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label3));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label5));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label4));
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label7));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label6));
 
         // Tabs fill full layout
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity{
         final ViewPager viewPager = findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setOffscreenPageLimit(5);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);
 
         // Setting a listener for user interactions

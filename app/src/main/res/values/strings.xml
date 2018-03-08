@@ -17,6 +17,7 @@
     <string name="tab_label4">Podcasts</string>
     <string name="tab_label5">Events</string>
     <string name="tab_label6">Donate</string>
+    <string name="tab_label7">Forum</string>
 
     <!--Google Maps Key-->
     <string name="google_maps_key">AIzaSyAuTTD47CEAygKDloXAPHHaH4QP5yr_P4M</string>

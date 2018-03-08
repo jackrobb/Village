@@ -34,6 +34,8 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             case 4:
                 return new TabPodcast();
             case 5:
+                return new TabForum();
+            case 6:
                 return new TabDonate();
             default:
                 return null;

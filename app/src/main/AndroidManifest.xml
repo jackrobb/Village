@@ -13,7 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
@@ -81,6 +80,8 @@
             android:name=".PodcastPlayer"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+        <activity android:name=".NewForum"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
