@@ -1,7 +1,12 @@
 package jack.village;
 
 import android.content.Intent;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -10,112 +15,170 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.ToggleButton;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import org.w3c.dom.Text;
 
 import java.util.EventListener;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private FirebaseAuth auth;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle toggle;
+    private Fragment fragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Initiate custom toolbar for tabs
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.nav);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
 
-        // Create an instance of the tab layout which contains tab headers
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
 
-        // Set the text for each tab header
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label1));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label2));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label3));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label5));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label4));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label7));
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.tab_label6));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Tabs fill full layout
-        tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
-        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        //Allows users to flip left and right between tabs
-        final ViewPager viewPager = findViewById(R.id.pager);
-        final PagerAdapter adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
-        viewPager.setOffscreenPageLimit(2);
-        viewPager.setAdapter(adapter);
+        NavigationView navigationView = findViewById(R.id.nav_view);
 
-        // Setting a listener for user interactions
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
+        auth = FirebaseAuth.getInstance();
+        if(auth.getCurrentUser() != null)
+        {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.navigation_menu);
+        } else
+        {
+            navigationView.getMenu().clear();
+            navigationView.inflateMenu(R.menu.navigation_menu_guest);
+        }
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+        View header=navigationView.getHeaderView(0);
+        FirebaseUser user = auth.getCurrentUser();
+        TextView showEmail = header.findViewById(R.id.user_email);
+        String email;
 
-            }
+        if(user != null && user.getEmail() != null) {
+            email = user.getEmail();
+        }
+        else{
+            email = "Guest";
+        }
+        showEmail.setText(email);
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+        navigationView.setNavigationItemSelectedListener(this);
 
-            }
-        });
+        if(fragment == null) {
+            fragment = new TabHome();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+            navigationView.getMenu().getItem(0).setChecked(true);
+        }
     }
 
 
+    @Override
+    public void onResume(){
+        fragment = new TabHome();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.content_frame, fragment);
+        ft.commit();
+        super.onResume();
+    }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() == null) {
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.guest_menu, menu);
-        }else {
-            //Used to initiate menu containing logout and update button
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu, menu);
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
         }
 
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(MenuItem item){
+        int id = item.getItemId();
 
-        //Switch for different menu items
-        switch(item.getItemId()){
-            case R.id.menuLogout:
-
-                //Get current user and sign them out, finishing all activities to prevent users going back without signing in
-                FirebaseAuth.getInstance().signOut();
-                finishAffinity();
-                finish();
-                startActivity(new Intent(this, LoginActivity.class));
-                break;
-
-            case R.id.menuLogin:
-                startActivity(new Intent(this, LoginActivity.class));
-                break;
-
-                //Open update account activity
-            case R.id.menuChange:
-                startActivity(new Intent(this, UpdateAccountActivity.class));
-                break;
-
-            case R.id.menuCreate:
-                startActivity(new Intent(this, SignUpActivity.class));
-                break;
+        if (id == R.id.home && !item.isChecked()) {
+            fragment = new TabHome();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
         }
 
+        else if (id == R.id.contact && !item.isChecked()) {
+            fragment = new TabContact();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+        }
+
+        else if (id == R.id.notes && !item.isChecked()) {
+            fragment = new TabNotes();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+        }
+
+        else if (id == R.id.podcast && !item.isChecked()) {
+            fragment = new TabPodcast();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+        }
+
+        else if (id == R.id.events && !item.isChecked()) {
+            fragment = new TabEvents();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+        }
+
+        else if (id == R.id.forum && !item.isChecked()) {
+            fragment = new TabForum();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+        }
+
+        else if (id == R.id.donate && !item.isChecked()) {
+            fragment = new TabDonate();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_frame, fragment);
+            ft.commit();
+        }
+
+        if (id == R.id.logout) {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
+        }
+
+        else if (id == R.id.settings) {
+            startActivity(new Intent(this, UpdateAccountActivity.class));
+        }
+
+        else if (id == R.id.createAccount){
+            startActivity(new Intent(this, SignUpActivity.class));
+        }
+
+        else if(id == R.id.login){
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+
+        item.setChecked(true);
+        drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 }

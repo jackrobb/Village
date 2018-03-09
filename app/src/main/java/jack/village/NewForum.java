@@ -39,6 +39,8 @@ public class NewForum extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_forum);
 
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         storage = FirebaseStorage.getInstance().getReference();
         database = FirebaseDatabase.getInstance().getReference().child("Forum");
 

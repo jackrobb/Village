@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
+
+        <item android:id="@+id/home"
+            android:icon="@mipmap/ic_home_black_24dp"
+            android:title="@string/tab_label1"/>
+
+        <item android:id="@+id/contact"
+            android:icon="@mipmap/ic_email_black_24dp"
+            android:title="@string/tab_label2"/>
+
+        <item android:id="@+id/notes"
+            android:icon="@mipmap/ic_note_black_24dp"
+            android:title="@string/tab_label3"/>
+
+        <item android:id="@+id/podcast"
+            android:icon="@mipmap/ic_speaker_phone_black_24dp"
+            android:title="@string/tab_label4"/>
+
+        <item android:id="@+id/events"
+            android:icon="@mipmap/ic_event_black_24dp"
+            android:title="@string/tab_label5"/>
+
+        <item android:id="@+id/forum"
+            android:icon="@mipmap/ic_forum_black_24dp"
+            android:title="@string/tab_label7"/>
+
+        <item android:id="@+id/donate"
+            android:icon="@mipmap/ic_payment_black_24dp"
+            android:title="@string/tab_label6"/>
+
+    </group>
+
+    <group
+        android:id="@+id/menu_bottom"
+        android:checkableBehavior="none">
+
+        <item android:id="@+id/createAccount"
+            android:icon="@mipmap/ic_account_circle_black_24dp"
+            android:title="@string/create">
+        </item>
+
+        <item android:id="@+id/login"
+            android:icon="@mipmap/ic_vpn_key_black_24dp"
+            android:title="@string/login">
+        </item>
+
+    </group>
+
+</menu>
