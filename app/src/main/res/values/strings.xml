@@ -77,7 +77,7 @@
     <string name="volunteer">I\'d like to volunteer in a ministry</string>
     <string name="contacted">I\'d like to be contacted by a leader</string>
     <string name="comments">Comments</string>
-    <string name="submit">Submit</string>
+    <string name="submit">Done</string>
 
     <!--Single Note-->
     <string name="note_title">Note Title</string>

@@ -52,7 +52,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".NoteActivity"
-            android:label="New Note"
+            android:label=""
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -80,8 +80,12 @@
             android:name=".PodcastPlayer"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity android:name=".NewForum"
+        <activity
+            android:name=".NewForum"
             android:screenOrientation="portrait"/>
+        <activity android:name=".ForumSingleActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

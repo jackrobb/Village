@@ -2,7 +2,7 @@ package jack.village;
 
 
 /**
- * Created by jack on 02/02/2018.
+ * Created by jack on 02/02/2018
  */
 
 public class FirebaseInstanceIDService extends com.google.firebase.iid.FirebaseInstanceIdService {

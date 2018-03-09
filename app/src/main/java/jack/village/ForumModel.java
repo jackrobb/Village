@@ -1,22 +1,30 @@
 package jack.village;
 
 /**
- * Created by jack on 08/03/2018.
+ * Created by jack on 08/03/2018
  */
 
 public class ForumModel {
 
-    private String title, content, image, uid;
+    private String title, content, image, email;
 
     public ForumModel(){
 
     }
 
-    public ForumModel(String title, String content, String image, String uid) {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public ForumModel(String title, String content, String image, String uid, String email) {
         this.title = title;
         this.content = content;
         this.image = image;
-        this.uid = uid;
+
     }
 
     public String getTitle() {
@@ -37,17 +45,5 @@ public class ForumModel {
 
     public String getImage() {
         return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 }

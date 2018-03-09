@@ -9,22 +9,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import org.w3c.dom.Text;
-
-import java.util.EventListener;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -44,9 +38,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if(getSupportActionBar() !=null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
@@ -55,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.navigation_menu);
+
         } else
         {
             navigationView.getMenu().clear();
@@ -64,10 +60,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View header=navigationView.getHeaderView(0);
         FirebaseUser user = auth.getCurrentUser();
         TextView showEmail = header.findViewById(R.id.user_email);
+        ImageView userImage = header.findViewById(R.id.imageView);
         String email;
 
         if(user != null && user.getEmail() != null) {
             email = user.getEmail();
+
+            String hash = MD5Util.md5Hex(email);
+
+            String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048";
+
+            Glide.with(getApplicationContext())
+                    .load(icon)
+                    .apply(new RequestOptions()
+                            .circleCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                    .into(userImage);
         }
         else{
             email = "Guest";
@@ -83,16 +91,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ft.commit();
             navigationView.getMenu().getItem(0).setChecked(true);
         }
-    }
-
-
-    @Override
-    public void onResume(){
-        fragment = new TabHome();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_frame, fragment);
-        ft.commit();
-        super.onResume();
     }
 
     @Override

@@ -37,7 +37,7 @@
 
     <group
         android:id="@+id/menu_bottom"
-        android:checkableBehavior="single">
+        android:checkableBehavior="none">
 
         <item android:id="@+id/settings"
             android:icon="@mipmap/ic_settings_black_24dp"

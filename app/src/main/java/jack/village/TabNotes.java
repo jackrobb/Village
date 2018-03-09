@@ -15,7 +15,6 @@ import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -47,8 +46,6 @@ public class TabNotes extends Fragment implements View.OnClickListener{
 
         private TextView logged;
 
-        ProgressBar progressBar;
-
 
     public TabNotes() {
         // Required empty public constructor
@@ -65,8 +62,6 @@ public class TabNotes extends Fragment implements View.OnClickListener{
             createNote.setOnClickListener(this);
 
             noteList = view.findViewById(R.id.noteList);
-
-            progressBar = view.findViewById(R.id.progressbar);
 
             logged = view.findViewById(R.id.loggedIn);
 
@@ -87,7 +82,6 @@ public class TabNotes extends Fragment implements View.OnClickListener{
                     notesDatabase.keepSynced(true);
 
                     loadData();
-//                }
             }
 
 
@@ -95,7 +89,6 @@ public class TabNotes extends Fragment implements View.OnClickListener{
     }
 
     private void loadData() {
-        progressBar.setVisibility(View.VISIBLE);
 
         //Order the notes by time created
         Query query = notesDatabase.orderByChild("timestamp");
@@ -113,8 +106,6 @@ public class TabNotes extends Fragment implements View.OnClickListener{
             @Override
             protected void populateViewHolder(final NoteViewHolder viewHolder, NoteModel model, final int position) {
                 final String noteId = getRef(position).getKey();
-
-                progressBar.setVisibility(View.GONE);
 
                 //Displays all users current notes
                 notesDatabase.child(noteId).addValueEventListener(new ValueEventListener() {

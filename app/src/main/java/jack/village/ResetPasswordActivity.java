@@ -1,8 +1,6 @@
 package jack.village;
 
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;

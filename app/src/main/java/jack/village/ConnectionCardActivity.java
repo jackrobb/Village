@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,6 +23,11 @@ public class ConnectionCardActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection_card);
+
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         nameField = findViewById(R.id.name);
         dobField = findViewById(R.id.dob);
@@ -176,6 +182,19 @@ public class ConnectionCardActivity extends AppCompatActivity implements View.On
     public void onBackPressed() {
         super.onBackPressed();
         this.finish();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+
+        return true;
     }
 
 

@@ -14,10 +14,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
+import com.google.firebase.database.Query;
 
 import static android.widget.GridLayout.VERTICAL;
 
@@ -31,11 +35,11 @@ public class TabForum extends Fragment implements View.OnClickListener{
     private RecyclerView forumList;
     private LinearLayoutManager linearLayoutManager;
     private DatabaseReference database;
+    private FirebaseAuth auth;
 
     public TabForum() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,26 +60,50 @@ public class TabForum extends Fragment implements View.OnClickListener{
         forumList.setHasFixedSize(true);
         forumList.setLayoutManager(linearLayoutManager);
 
-        database.keepSynced(true);
+        auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() != null) {
+            database.keepSynced(true);
+        }
 
         return view;
+    }
+
+    public void onResume(){
+        super.onResume();
+        if (auth.getCurrentUser() == null) {
+            createPost.hide();
+        }
     }
 
     @Override
     public void onStart(){
         super.onStart();
 
+        Query query = database.orderByChild("timestamp").limitToLast(15);
+
         FirebaseRecyclerAdapter<ForumModel, ForumViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<ForumModel, ForumViewHolder>(
                 ForumModel.class,
                 R.layout.single_forum_layout,
                 ForumViewHolder.class,
-                database
+                query
         ) {
             @Override
             protected void populateViewHolder(ForumViewHolder viewHolder, ForumModel model, int position) {
+
+                final String forum_id = getRef(position).getKey();
+
                 viewHolder.setTitle(model.getTitle());
                 viewHolder.setContent(model.getContent());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent forum = new Intent(getActivity(), ForumSingleActivity.class);
+                        forum.putExtra("forum_id", forum_id);
+                        startActivity(forum);
+                    }
+                });
             }
         };
 
@@ -106,7 +134,15 @@ public class TabForum extends Fragment implements View.OnClickListener{
 
         public void setImage(Context context, String image){
             ImageView forumImage = mView.findViewById(R.id.forumImage);
-            Picasso.with(context).load(image).into(forumImage);
+            Glide.with(context)
+                    .load(image)
+                    .apply(new RequestOptions()
+                            .override(600, 600)
+                            .centerCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                    .into(forumImage);
+
+
         }
 
     }
