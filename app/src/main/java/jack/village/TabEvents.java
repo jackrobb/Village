@@ -1,7 +1,10 @@
 package jack.village;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 public class TabEvents extends Fragment {
 
@@ -32,11 +36,15 @@ public class TabEvents extends Fragment {
 
         setRetainInstance(true);
 
-        WiseWeWebClient myWebClient = new WiseWeWebClient();
-        webView.setWebViewClient(myWebClient);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webView.loadUrl(url);
+        if (internet_connection()) {
+            WiseWeWebClient myWebClient = new WiseWeWebClient();
+            webView.setWebViewClient(myWebClient);
+            WebSettings webSettings = webView.getSettings();
+            webSettings.setJavaScriptEnabled(true);
+            webView.loadUrl(url);
+        }else{
+            Toast.makeText(getContext(), "Internet Connection Required", Toast.LENGTH_SHORT).show();
+        }
 
 
         webView.setOnKeyListener(new View.OnKeyListener() {
@@ -84,6 +92,16 @@ public class TabEvents extends Fragment {
             startActivity(intent);
             return true;
         }
+    }
+
+    //Method to check if the device has an internet connection
+    boolean internet_connection(){
+        ConnectivityManager connectionManager = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = connectionManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+
     }
 
 }

@@ -1,7 +1,10 @@
 package jack.village;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -81,8 +85,12 @@ public class FeedActivityNew extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressDialog.show();
-                post();
+                if (internet_connection()) {
+                    progressDialog.show();
+                    post();
+                }else{
+                    Toast.makeText(FeedActivityNew.this, "Internet Connection Required", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -173,6 +181,16 @@ public class FeedActivityNew extends AppCompatActivity {
             image = data.getData();
             feedImage.setImageURI(image);
         }
+    }
+
+    //Method to check if the device has an internet connection
+    boolean internet_connection(){
+        ConnectivityManager connectionManager = (ConnectivityManager)FeedActivityNew.this.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = connectionManager.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+
     }
 
 }
