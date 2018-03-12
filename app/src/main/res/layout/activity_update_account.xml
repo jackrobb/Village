@@ -29,6 +29,23 @@
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/white">
 
+                <EditText
+                    android:id="@+id/changeName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    android:inputType="text"
+                    android:paddingBottom="15dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/white">
+
             <EditText
                 android:id="@+id/changeEmail"
                 android:layout_width="match_parent"

@@ -34,7 +34,7 @@ import static android.widget.GridLayout.VERTICAL;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabNotes extends Fragment implements View.OnClickListener{
+public class NotesTab extends Fragment implements View.OnClickListener{
 
         private FloatingActionButton createNote;
         private RecyclerView noteList;
@@ -47,7 +47,7 @@ public class TabNotes extends Fragment implements View.OnClickListener{
         private TextView logged;
 
 
-    public TabNotes() {
+    public NotesTab() {
         // Required empty public constructor
     }
 

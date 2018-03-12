@@ -4,27 +4,28 @@ package jack.village;
  * Created by jack on 08/03/2018
  */
 
-public class ForumModel {
+public class FeedModel {
 
-    private String title, content, image, email;
+    //Model for the news feed
 
-    public ForumModel(){
+    private String title, content, image, userName;
+
+    public FeedModel(){
 
     }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
 
-    public ForumModel(String title, String content, String image, String uid, String email) {
+    public FeedModel(String title, String content, String image, String uid, String userName) {
         this.title = title;
+        this.userName = userName;
         this.content = content;
         this.image = image;
 
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     public String getTitle() {

@@ -16,9 +16,9 @@ import java.util.List;
  * Created by jack on 13/02/2018
  */
 
-public class RssFeedAdapter extends RecyclerView.Adapter<RssFeedAdapter.viewHolder>{
+public class PodcastRssFeedAdapter extends RecyclerView.Adapter<PodcastRssFeedAdapter.viewHolder>{
 
-    private List<RSSModel> rssModels;
+    private List<PodcastRSSModel> podcastRssModels;
     private String podcast1;
     private String title;
     private String description;
@@ -35,8 +35,8 @@ public class RssFeedAdapter extends RecyclerView.Adapter<RssFeedAdapter.viewHold
         }
     }
 
-    RssFeedAdapter(List<RSSModel> RSSModels) {
-        rssModels = RSSModels;
+    PodcastRssFeedAdapter(List<PodcastRSSModel> PodcastRSSModels) {
+        podcastRssModels = PodcastRSSModels;
     }
 
     //Inflate the view used for each list item
@@ -52,22 +52,22 @@ public class RssFeedAdapter extends RecyclerView.Adapter<RssFeedAdapter.viewHold
     //Bind the values from the objects to the view
     @Override
     public void onBindViewHolder(viewHolder holder, int position) {
-        final RSSModel RSSModel = rssModels.get(position);
-        ((TextView)holder.rssFeedView.findViewById(R.id.titleText)).setText(RSSModel.title);
-        ((TextView)holder.rssFeedView.findViewById(R.id.descriptionText)).setText(RSSModel.description);
+        final PodcastRSSModel PodcastRSSModel = podcastRssModels.get(position);
+        ((TextView)holder.rssFeedView.findViewById(R.id.titleText)).setText(PodcastRSSModel.title);
+        ((TextView)holder.rssFeedView.findViewById(R.id.descriptionText)).setText(PodcastRSSModel.description);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Get the Link set it to a string
-                Uri podcastUri = Uri.parse(RSSModel.link);
+                Uri podcastUri = Uri.parse(PodcastRSSModel.link);
                 podcast1 = podcastUri.toString();
 
                 //Get the title and set it to a string
-                Uri titleUri = Uri.parse(RSSModel.title);
+                Uri titleUri = Uri.parse(PodcastRSSModel.title);
                 title = titleUri.toString();
 
                 //Get the description and set it to a string
-                Uri descriptionUri = Uri.parse(RSSModel.description);
+                Uri descriptionUri = Uri.parse(PodcastRSSModel.description);
                 description = descriptionUri.toString();
 
                 //New intent to start podcast player, passing the data through with the intent
@@ -85,7 +85,7 @@ public class RssFeedAdapter extends RecyclerView.Adapter<RssFeedAdapter.viewHold
     //Returns the number of items in the list
     @Override
     public int getItemCount() {
-        return rssModels.size();
+        return podcastRssModels.size();
     }
 
 }

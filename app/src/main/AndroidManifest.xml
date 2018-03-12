@@ -81,9 +81,9 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".NewForum"
+            android:name=".FeedActivityNew"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ForumSingleActivity"
+        <activity android:name=".FeedSingleActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>

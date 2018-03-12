@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="jack.village.ForumSingleActivity">
+    tools:context="jack.village.FeedActivityNew">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/forumToolBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme" />
+
+        <Button
+            android:id="@+id/feedSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:text="@string/submit" />
 
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_above="@id/feedSubmit"
+        android:layout_alignParentTop="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,8 +29,8 @@
             android:orientation="vertical">
 
 
-            <ImageView
-                android:id="@+id/forumImage"
+            <ImageButton
+                android:id="@+id/feedImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -37,14 +40,15 @@
                 app:srcCompat="@mipmap/add_btn" />
 
 
-            <TextView
-                android:id="@+id/forumTitle"
+            <EditText
+                android:id="@+id/feedTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:hint="@string/title"
+                android:inputType="text"
                 android:background="@android:color/transparent"
                 android:textCursorDrawable="@drawable/cursor"/>
 
@@ -59,13 +63,14 @@
                 android:alpha="0.3"
                 android:background="@color/colorAccent" />
 
-            <TextView
-                android:id="@+id/forumContent"
+            <EditText
+                android:id="@+id/feedContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
                 android:textSize="14sp"
                 android:hint="@string/content"
+                android:inputType="textMultiLine"
                 android:background="@android:color/transparent"
                 android:textCursorDrawable="@drawable/cursor"/>
 
@@ -73,4 +78,4 @@
 
     </ScrollView>
 
-</LinearLayout>
+</RelativeLayout>

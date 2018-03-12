@@ -33,16 +33,16 @@ import static android.content.ContentValues.TAG;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TabPodcast extends Fragment {
+public class PodcastTab extends Fragment {
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeLayout;
 
-    private List<RSSModel> feedList;
-    List<RSSModel> items = new ArrayList<>();
+    private List<PodcastRSSModel> feedList;
+    List<PodcastRSSModel> items = new ArrayList<>();
 
 
-    public TabPodcast() {
+    public PodcastTab() {
         // Required empty public constructor
     }
 
@@ -126,11 +126,11 @@ public class TabPodcast extends Fragment {
             //Set the refreshing icon to false as page has loaded
             swipeLayout.setRefreshing(false);
                 // Fill RecyclerView
-                recyclerView.setAdapter(new RssFeedAdapter(feedList));
+                recyclerView.setAdapter(new PodcastRssFeedAdapter(feedList));
         }
     }
 
-    public List<RSSModel> parseFeed(InputStream inputStream) throws XmlPullParserException,
+    public List<PodcastRSSModel> parseFeed(InputStream inputStream) throws XmlPullParserException,
             IOException {
         String title = null;
         String link = null;
@@ -192,7 +192,7 @@ public class TabPodcast extends Fragment {
                             //If all items have a value, create a new item model and add the items
                             if (title != null && link != null && description != null) {
                                 if (inItem) {
-                                    RSSModel item = new RSSModel(title, link, description);
+                                    PodcastRSSModel item = new PodcastRSSModel(title, link, description);
                                     items.add(item);
 
                                     //Amount +1

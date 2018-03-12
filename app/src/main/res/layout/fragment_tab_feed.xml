@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="jack.village.TabForum">
+    tools:context="jack.village.FeedTab">
     
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/forumList"
+        android:id="@+id/feedList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

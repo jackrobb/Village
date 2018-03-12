@@ -18,36 +18,40 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class ForumSingleActivity extends AppCompatActivity {
+public class FeedSingleActivity extends AppCompatActivity {
 
     private DatabaseReference database;
+    private DatabaseReference like;
 
-    private String forum_id;
+    private String feed_id;
     private String uid;
 
     private TextView title;
     private TextView content;
     private ImageView image;
-    private Toolbar toolbar;
 
     private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forum_single);
+        setContentView(R.layout.activity_feed_single);
 
-        database = FirebaseDatabase.getInstance().getReference().child("Forum");
+        //Get reference to feed and like database
+        database = FirebaseDatabase.getInstance().getReference().child("Feed");
+        like = FirebaseDatabase.getInstance().getReference().child("Like");
 
+        //Get instance of auth
         auth = FirebaseAuth.getInstance();
 
-        forum_id = getIntent().getExtras().getString("forum_id");
+        //Get the feed id from the feed tab
+        feed_id = getIntent().getExtras().getString("feed_id");
 
-        title = findViewById(R.id.forumTitle);
-        content = findViewById(R.id.forumContent);
-        image = findViewById(R.id.forumImage);
+        title = findViewById(R.id.feedTitle);
+        content = findViewById(R.id.feedContent);
+        image = findViewById(R.id.feedImage);
 
-        toolbar = findViewById(R.id.forumToolBar);
+        Toolbar toolbar = findViewById(R.id.feedToolBar);
         setSupportActionBar(toolbar);
 
         if(getSupportActionBar() != null) {
@@ -55,20 +59,23 @@ public class ForumSingleActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        database.child(forum_id).addValueEventListener(new ValueEventListener() {
+        //Set listener for child of the feed_id pulled from the previous activity
+        database.child(feed_id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                String forumTitle = (String) dataSnapshot.child("title").getValue();
-                String forumContent = (String) dataSnapshot.child("content").getValue();
-                String forumImage = (String) dataSnapshot.child("image").getValue();
+                //Pull the title, content and image
+                String feedTitle = (String) dataSnapshot.child("title").getValue();
+                String feedContent = (String) dataSnapshot.child("content").getValue();
+                String feedImage = (String) dataSnapshot.child("image").getValue();
                 uid = (String) dataSnapshot.child("uid").getValue();
 
-                title.setText(forumTitle);
-                content.setText(forumContent);
+                //Set them to displayed feed
+                title.setText(feedTitle);
+                content.setText(feedContent);
 
                 Glide.with(getApplicationContext())
-                        .load(forumImage)
+                        .load(feedImage)
                         .apply(new RequestOptions()
                                 .override(600, 600)
                                 .centerCrop()
@@ -90,6 +97,7 @@ public class ForumSingleActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
+        //If the user who posted the post is signed in allow them to delete it
         if(auth.getCurrentUser() != null) {
             if (auth.getCurrentUser().getUid().equals(uid)) {
                 getMenuInflater().inflate(R.menu.note_menu, menu);
@@ -99,8 +107,10 @@ public class ForumSingleActivity extends AppCompatActivity {
         return true;
     }
 
-    private void deleteForum(){
-        database.child(forum_id).removeValue();
+    private void deleteFeed(){
+        //Delete feed and likes from the database
+        like.child(feed_id).removeValue();
+        database.child(feed_id).removeValue();
         finish();
     }
 
@@ -111,7 +121,7 @@ public class ForumSingleActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.noteDelete:
-                    deleteForum();
+                    deleteFeed();
                 break;
             case android.R.id.home:
                 onBackPressed();

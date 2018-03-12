@@ -15,12 +15,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText editTextEmail, editTextPassword;
+    EditText editTextEmail, editTextPassword, userName;
 
     private FirebaseAuth mAuth;
+    private DatabaseReference database;
     ProgressBar progressBar;
 
     @Override
@@ -32,8 +35,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         editTextPassword = findViewById(R.id.editTextPassword);
 
         mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        progressBar = findViewById(R.id.progressbar);
+        userName = findViewById(R.id.name);
 
         findViewById(R.id.buttonSignUp).setOnClickListener(this);
         findViewById(R.id.textViewLogin).setOnClickListener(this);
@@ -43,6 +48,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
     private void registerUser(){
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        final String user = userName.getText().toString().trim();
+
+        //Check to ensure name is not empty, focus on field if it is
+        if(user.isEmpty()){
+            userName.setError("Name Required");
+            userName.requestFocus();
+            return;
+        }
 
         //Check to ensure email is not empty, focus field if it is
         if(email.isEmpty()){
@@ -82,6 +95,10 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
                 //If successful finish the activity, give the user a notification it was successful and open Main Activity
                 if(task.isSuccessful()){
+                    String user_id = mAuth.getCurrentUser().getUid();
+                    DatabaseReference current_user = database.child(user_id);
+                    current_user.child("Name").setValue(user);
+
                     finish();
                     Toast.makeText(getApplicationContext(), "Registration Successful", Toast.LENGTH_SHORT).show();
                     Intent j = new Intent(SignUpActivity.this, MainActivity.class);

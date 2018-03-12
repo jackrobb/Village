@@ -14,13 +14,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class UpdateAccountActivity extends AppCompatActivity {
 
     EditText changeEmail;
     EditText changePassword;
+    EditText changeName;
     FirebaseAuth auth;
     ProgressBar progressBar;
+    private DatabaseReference database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +33,9 @@ public class UpdateAccountActivity extends AppCompatActivity {
 
         changeEmail = findViewById(R.id.changeEmail);
         changePassword = findViewById(R.id.changePassword);
+        changeName = findViewById(R.id.changeName);
         auth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance().getReference().child("Users");
         progressBar = findViewById(R.id.progressbar);
     }
 
@@ -37,12 +43,20 @@ public class UpdateAccountActivity extends AppCompatActivity {
         //Get the current user information
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        //Failsafe check to ensure a user is definitely logged in before allowing them to change their password
+        //Fail safe check to ensure a user is definitely logged in before allowing them to change their password
         if(user!=null){
 
             //Get new email and password
+            final String userName = changeName.getText().toString().trim();
             String email = changeEmail.getText().toString().trim();
             String password = changePassword.getText().toString().trim();
+
+            //Ensure email is not empty, set focus on email field if it is
+            if(userName.isEmpty()){
+                changeName.setError("Name Required");
+                changeName.requestFocus();
+                return;
+            }
 
             //Ensure email is not empty, set focus on email field if it is
             if(email.isEmpty()){
@@ -81,6 +95,10 @@ public class UpdateAccountActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if(task.isSuccessful()){
+
+                        String user_id = auth.getCurrentUser().getUid();
+                        DatabaseReference current_user = database.child(user_id);
+                        current_user.child("Name").setValue(userName);
 
                         //Clear Progress Bar
                         progressBar.setVisibility(View.GONE);

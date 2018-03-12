@@ -1,6 +1,7 @@
 package jack.village;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -19,10 +20,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
-    private FirebaseAuth auth;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     private Fragment fragment = null;
@@ -32,8 +37,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+
         drawerLayout = findViewById(R.id.nav);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference().child("Users");
 
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
@@ -45,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
-        auth = FirebaseAuth.getInstance();
         if(auth.getCurrentUser() != null)
         {
             navigationView.getMenu().clear();
@@ -58,15 +67,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         View header=navigationView.getHeaderView(0);
-        FirebaseUser user = auth.getCurrentUser();
-        TextView showEmail = header.findViewById(R.id.user_email);
+        final TextView showEmail = header.findViewById(R.id.user_email);
         ImageView userImage = header.findViewById(R.id.imageView);
-        String email;
+        final String userEmail;
 
-        if(user != null && user.getEmail() != null) {
-            email = user.getEmail();
+        if(user != null) {
+            userEmail = auth.getCurrentUser().getEmail();
+            final String user_id = auth.getCurrentUser().getUid();
 
-            String hash = MD5Util.md5Hex(email);
+            database.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.child(user_id).child("Name").getValue() != null) {
+                        String userName = dataSnapshot.child(user_id).child("Name").getValue().toString();
+                        showEmail.setText(userName);
+                    }else {
+                        showEmail.setText(R.string.error);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            String hash = MD5Util.md5Hex(userEmail);
 
             String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048";
 
@@ -78,9 +104,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .into(userImage);
         }
         else{
-            email = "Guest";
+            showEmail.setText(R.string.Guest);
         }
-        showEmail.setText(email);
+
 
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -104,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item){
+    public boolean onNavigationItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
 
         if (id == R.id.home && !item.isChecked()) {
@@ -122,14 +148,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         else if (id == R.id.notes && !item.isChecked()) {
-            fragment = new TabNotes();
+            fragment = new NotesTab();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
             ft.commit();
         }
 
         else if (id == R.id.podcast && !item.isChecked()) {
-            fragment = new TabPodcast();
+            fragment = new PodcastTab();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
             ft.commit();
@@ -143,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         else if (id == R.id.forum && !item.isChecked()) {
-            fragment = new TabForum();
+            fragment = new FeedTab();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
             ft.commit();
