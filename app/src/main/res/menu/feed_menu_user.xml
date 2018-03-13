@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/noteDelete"
-        android:icon="@drawable/delete"
+        android:id="@+id/share"
         android:orderInCategory="100"
-        android:title="@string/delete"
+        android:title="@string/share"
         app:showAsAction="always" />
 
 </menu>

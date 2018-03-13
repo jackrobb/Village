@@ -15,11 +15,15 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class TabEvents extends Fragment {
 
     WebView webView;
+    ImageButton refresh;
+    TextView reload;
     String url = "https://www.villagebelfast.com/events/";
 
     public TabEvents() {
@@ -33,18 +37,31 @@ public class TabEvents extends Fragment {
         View view = inflater.inflate(R.layout.fragment_tab_events, container, false);
 
         webView = view.findViewById(R.id.webView);
+        refresh = view.findViewById(R.id.refresh);
+        reload = view.findViewById(R.id.reload);
 
         setRetainInstance(true);
 
         if (internet_connection()) {
-            WiseWeWebClient myWebClient = new WiseWeWebClient();
-            webView.setWebViewClient(myWebClient);
-            WebSettings webSettings = webView.getSettings();
-            webSettings.setJavaScriptEnabled(true);
-            webView.loadUrl(url);
+            webView.setVisibility(View.VISIBLE);
+            load();
         }else{
+            webView.setVisibility(View.INVISIBLE);
             Toast.makeText(getContext(), "Internet Connection Required", Toast.LENGTH_SHORT).show();
         }
+
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (internet_connection()) {
+                    webView.setVisibility(View.VISIBLE);
+                    load();
+                }else{
+                    webView.setVisibility(View.INVISIBLE);
+                    Toast.makeText(getContext(), "Internet Connection Required", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
         webView.setOnKeyListener(new View.OnKeyListener() {
@@ -70,6 +87,16 @@ public class TabEvents extends Fragment {
         return view;
 
 }
+
+    public void load(){
+        refresh.setVisibility(View.INVISIBLE);
+        reload.setVisibility(View.INVISIBLE);
+        WiseWeWebClient myWebClient = new WiseWeWebClient();
+        webView.setWebViewClient(myWebClient);
+        WebSettings webSettings = webView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webView.loadUrl(url);
+    }
 
 
 

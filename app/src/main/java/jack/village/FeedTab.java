@@ -10,12 +10,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -28,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import static android.view.View.INVISIBLE;
 import static android.widget.GridLayout.VERTICAL;
 
 
@@ -42,6 +45,7 @@ public class FeedTab extends Fragment implements View.OnClickListener{
     private FirebaseAuth auth;
     private boolean isLiked = false;
     private DatabaseReference like;
+    private String posterEmail;
 
     public FeedTab() {
         // Required empty public constructor
@@ -91,8 +95,8 @@ public class FeedTab extends Fragment implements View.OnClickListener{
     public void onStart(){
         super.onStart();
 
-        //Order feeds by time and limit to 15
-        Query query = database.orderByChild("timestamp").limitToLast(15);
+        //Order feeds by time
+        Query query = database.orderByChild("timestamp");
 
         FirebaseRecyclerAdapter<FeedModel, FeedViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<FeedModel, FeedViewHolder>(
                 FeedModel.class,
@@ -101,7 +105,7 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                 query
         ) {
             @Override
-            protected void populateViewHolder(FeedViewHolder viewHolder, FeedModel model, int position) {
+            protected void populateViewHolder(final FeedViewHolder viewHolder, final FeedModel model, int position) {
 
                 //Set feed_id to the current postion key
                 final String feed_id = getRef(position).getKey();
@@ -114,13 +118,63 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                 viewHolder.setLike(feed_id);
                 viewHolder.setLikeCount(feed_id);
 
+                final String uid = model.getUid();
+
                 //Set on click listener to allow users to see full article
-                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+//                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        Intent feed = new Intent(getActivity(), FeedSingleActivity.class);
+//                        feed.putExtra("feed_id", feed_id);
+//                        startActivity(feed);
+//                    }
+//                });
+
+                final String title = model.getTitle();
+                final String content = model.getContent();
+                final String imageUrl = model.getImage();
+
+                final String share = imageUrl + "\n\n" + title + "\n\n" + content;
+
+                //Set on click listener to display a pop up menu
+                viewHolder.options.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent feed = new Intent(getActivity(), FeedSingleActivity.class);
-                        feed.putExtra("feed_id", feed_id);
-                        startActivity(feed);
+                        PopupMenu popup = new PopupMenu(getContext(), view);
+                        MenuInflater inflater = popup.getMenuInflater();
+                        if(auth.getCurrentUser() != null) {
+                            if (auth.getCurrentUser().getUid().equals(uid)) {
+                                inflater.inflate(R.menu.feed_menu, popup.getMenu());
+                            }else{
+                                inflater.inflate(R.menu.feed_menu_user, popup.getMenu());
+                            }
+                        }
+
+
+                        popup.show();
+
+                        //Set on click listeners to menu items
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem menuItem) {
+                                //Switch between different menu options
+                                switch (menuItem.getItemId()) {
+                                    //Allow user to delete post
+                                    case R.id.delete:
+                                        like.child(feed_id).removeValue();
+                                        database.child(feed_id).removeValue();
+                                        break;
+                                    case R.id.share:
+                                        Intent sendIntent = new Intent();
+                                        sendIntent.setAction(Intent.ACTION_SEND);
+                                        sendIntent.putExtra(Intent.EXTRA_TEXT, share);
+                                        sendIntent.setType("text/plain");
+                                        startActivity(sendIntent);
+                                        break;
+                                }
+                                return false;
+                            }
+                        });
                     }
                 });
 
@@ -160,6 +214,19 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                         }
                 });
 
+                if(model.getEmail() != null) {
+                    posterEmail = model.getEmail();
+                    String hash = MD5Util.md5Hex(posterEmail);
+
+                    String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048";
+
+                    Glide.with(FeedTab.this)
+                            .load(icon)
+                            .apply(new RequestOptions()
+                                    .circleCrop()
+                                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                            .into(viewHolder.postedByImage);
+                }
             }
         };
 
@@ -172,12 +239,14 @@ public class FeedTab extends Fragment implements View.OnClickListener{
 
         View mView;
         ImageButton like;
+        ImageButton options;
         DatabaseReference likes;
         DatabaseReference likeCountDB;
         FirebaseAuth auth;
         TextView likeCount;
         Context context;
         TextView postedBy;
+        ImageView postedByImage;
 
         public FeedViewHolder(View itemView) {
             super(itemView);
@@ -190,6 +259,8 @@ public class FeedTab extends Fragment implements View.OnClickListener{
 
             likeCount = mView.findViewById(R.id.likeCount);
             postedBy = mView.findViewById(R.id.postedBy);
+            options = mView.findViewById(R.id.options);
+            postedByImage = mView.findViewById(R.id.postedByImage);
 
             context = mView.getContext();
 
@@ -248,7 +319,7 @@ public class FeedTab extends Fragment implements View.OnClickListener{
         public void setPostedBy(String userName){
             //Set text view to the user name that posted the post
             TextView postedBy = mView.findViewById(R.id.postedBy);
-            postedBy.setText("Posted by: " + userName);
+            postedBy.setText(userName);
         }
 
 
@@ -309,5 +380,6 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                 break;
         }
     }
+
 
 }

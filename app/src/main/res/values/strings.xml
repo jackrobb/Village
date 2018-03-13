@@ -10,11 +10,9 @@
     <!--Menu-->
     <string name="create">Create Account</string>
     <string name="logout">Logout</string>
+    <string name="reload">Error loading page \n Tap to retry</string>
 
     <!--Tab strings-->
-    <string name="tab_text_1">Tab 1</string>
-    <string name="tab_text_2">Tab 2</string>
-    <string name="tab_text_3">Tab 3</string>
     <string name="tab_label1">Home</string>
     <string name="tab_label2">Contact</string>
     <string name="tab_label3">Notes</string>
@@ -89,6 +87,8 @@
     <!--Feed-->
     <string name="nil">0</string>
     <string name="posted">Posted by: </string>
+    <string name="delete">Delete</string>
+    <string name="share">Share</string>
 
     <!--Podcast-->
     <string name="content">Content</string>

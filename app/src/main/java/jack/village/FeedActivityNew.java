@@ -86,7 +86,6 @@ public class FeedActivityNew extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (internet_connection()) {
-                    progressDialog.show();
                     post();
                 }else{
                     Toast.makeText(FeedActivityNew.this, "Internet Connection Required", Toast.LENGTH_SHORT).show();
@@ -112,8 +111,24 @@ public class FeedActivityNew extends AppCompatActivity {
         final String title = feedTitle.getText().toString().trim();
         final String content = feedContent.getText().toString().trim();
 
+        //If there is no title break and set focus
+        if(title.isEmpty()){
+            feedTitle.setError("Title Required");
+            feedTitle.requestFocus();
+            return;
+        }
+
+        //If there is no image break and set focus
+        if(image == null){
+            feedTitle.setError("Image Required");
+            feedImage.requestFocus();
+            return;
+        }
+
+        progressDialog.show();
+
         //If they're not empty upload them to the database
-        if(!TextUtils.isEmpty(title) && !TextUtils.isEmpty(content) && image!= null) {
+        if(!TextUtils.isEmpty(title) && image!= null) {
             long time = System.currentTimeMillis();
             String unique = String.valueOf(time);
             StorageReference file = storage.child("Feed_Images").child(unique); //Set image to unique ID of timestamp

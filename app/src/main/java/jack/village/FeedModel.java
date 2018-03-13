@@ -1,5 +1,7 @@
 package jack.village;
 
+import java.security.PublicKey;
+
 /**
  * Created by jack on 08/03/2018
  */
@@ -8,7 +10,7 @@ public class FeedModel {
 
     //Model for the news feed
 
-    private String title, content, image, userName;
+    private String title, content, image, userName, uid, email;
 
     public FeedModel(){
 
@@ -16,13 +18,21 @@ public class FeedModel {
 
 
 
-    public FeedModel(String title, String content, String image, String uid, String userName) {
+    public FeedModel(String title, String content, String image, String uid, String userName, String email) {
         this.title = title;
         this.userName = userName;
         this.content = content;
         this.image = image;
+        this.uid = uid;
+        this.email = email;
 
     }
+
+    public String getEmail(){
+        return email;
+    }
+
+    public String getUid(){return uid;}
 
     public String getUserName() {
         return userName;
