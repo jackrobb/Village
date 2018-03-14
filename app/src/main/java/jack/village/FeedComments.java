@@ -1,19 +1,30 @@
 package jack.village;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,9 +79,32 @@ public class FeedComments extends AppCompatActivity {
         commentList = findViewById(R.id.commentList);
         submit = findViewById(R.id.send);
 
-        user = auth.getCurrentUser();
-        //Get reference to Firebase users database
-        users = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
+        if(auth.getCurrentUser() != null) {
+            user = auth.getCurrentUser();
+            //Get reference to Firebase users database
+            users = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
+        }else{
+            submit.setVisibility(View.INVISIBLE);
+            commentField.setInputType(InputType.TYPE_NULL);
+
+            String loggedIn = getResources().getString(R.string.logged);
+            SpannableString loginLink = new SpannableString(loggedIn);
+            ClickableSpan clickableSpan = new ClickableSpan() {
+                @Override
+                public void onClick(View textView) {
+                    startActivity(new Intent(FeedComments.this, LoginActivity.class));
+                }
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(false);
+                }
+            };
+            loginLink.setSpan(clickableSpan, 12, 21, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            commentField.setText(loginLink);
+            commentField.setMovementMethod(LinkMovementMethod.getInstance());
+            commentField.setHighlightColor(getResources().getColor(R.color.colorAccent));
+        }
 
         //Set layout manager to control the flow of the feeds
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(FeedComments.this, VERTICAL, false);
@@ -123,8 +157,12 @@ public class FeedComments extends AppCompatActivity {
             @Override
             protected void populateViewHolder(final CommentsViewHolder viewHolder, final FeedCommentModel model, int position) {
 
-                    viewHolder.setUserName(model.getUserName());
-                    viewHolder.setComment(model.getComment());
+                final String comment_id = getRef(position).getKey();
+
+                viewHolder.setUserName(model.getUserName());
+                viewHolder.setComment(model.getComment());
+
+                final String uid = model.getUid();
 
                 if(model.getEmail() != null) {
                     posterEmail = model.getEmail();
@@ -139,6 +177,31 @@ public class FeedComments extends AppCompatActivity {
                                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
                             .into(viewHolder.postedByImage);
                 }
+
+
+
+                viewHolder.singleComment.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        if (auth.getCurrentUser() != null) {
+                            if (auth.getCurrentUser().getUid().equals(uid)) {
+                                new AlertDialog.Builder(FeedComments.this)
+                                        .setMessage("Delete Post?")
+                                        .setCancelable(false)
+                                        .setNegativeButton("Cancel", null)
+                                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                comments.child(comment_id).removeValue();
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                        return false;
+                    }
+                });
+
             }
         };
 
@@ -165,6 +228,7 @@ public class FeedComments extends AppCompatActivity {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //Post each item to the database
+                            post.child("uid").setValue(user.getUid());
                             post.child("email").setValue(user.getEmail());
                             post.child("comment").setValue(comment);
                             post.child("userName").setValue(dataSnapshot.child("Name").getValue()).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -198,6 +262,7 @@ public class FeedComments extends AppCompatActivity {
         TextView comment;
         TextView commentPoster;
         ImageView postedByImage;
+        LinearLayout singleComment;
 
         public CommentsViewHolder(View itemView) {
             super(itemView);
@@ -207,6 +272,7 @@ public class FeedComments extends AppCompatActivity {
             comment = mView.findViewById(R.id.comment);
             commentPoster = mView.findViewById(R.id.commentPoster);
             postedByImage = mView.findViewById(R.id.postedByImage);
+            singleComment = mView.findViewById(R.id.comment_single);
         }
 
         public void setUserName(String userName){
@@ -221,6 +287,19 @@ public class FeedComments extends AppCompatActivity {
             commentBox.setText(comment);
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+
+        return true;
     }
 
 

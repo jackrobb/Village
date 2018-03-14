@@ -117,6 +117,7 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
                 viewHolder.setLike(feed_id);
                 viewHolder.setLikeCount(feed_id);
+                viewHolder.setCommentCount(feed_id);
 
                 final String uid = model.getUid();
 
@@ -243,8 +244,10 @@ public class FeedTab extends Fragment implements View.OnClickListener{
         ImageButton options;
         DatabaseReference likes;
         DatabaseReference likeCountDB;
+        DatabaseReference commentCountDB;
         FirebaseAuth auth;
         TextView likeCount;
+        TextView commentCount;
         Context context;
         TextView postedBy;
         ImageView postedByImage;
@@ -263,6 +266,7 @@ public class FeedTab extends Fragment implements View.OnClickListener{
             options = mView.findViewById(R.id.options);
             postedByImage = mView.findViewById(R.id.postedByImage);
             comments = mView.findViewById(R.id.comment);
+            commentCount = mView.findViewById(R.id.commentCount);
 
             context = mView.getContext();
 
@@ -336,6 +340,27 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                     if(!likeCounter.isEmpty()){
                         //Set text to display the number of likes the post has
                         likeCount.setText(likeCounter);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        public void setCommentCount(final String feed_id){
+            //Get the number of children from the likes database
+            commentCountDB = FirebaseDatabase.getInstance().getReference().child("Comment").child(feed_id);
+            commentCountDB.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    String commentCounter = String.valueOf(dataSnapshot.getChildrenCount());
+                    if(!commentCounter.isEmpty()){
+                        //Set text to display the number of likes the post has
+                        commentCount.setText(commentCounter);
                     }
                 }
 
