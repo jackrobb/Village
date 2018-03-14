@@ -76,6 +76,17 @@
                     android:id="@+id/likeCount"
                     android:text="@string/nil"/>
 
+                <ImageButton
+                    android:id="@+id/comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_comment_black_24dp"
+                    android:tint="#D3D3D3"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:padding="5dp"
+                    android:background="@android:color/transparent"/>
+
             </LinearLayout>
 
             <TextView

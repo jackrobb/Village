@@ -89,6 +89,7 @@
     <string name="posted">Posted by: </string>
     <string name="delete">Delete</string>
     <string name="share">Share</string>
+    <string name="comment">Comment</string>
 
     <!--Podcast-->
     <string name="content">Content</string>

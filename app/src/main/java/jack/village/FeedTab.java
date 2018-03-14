@@ -121,14 +121,14 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                 final String uid = model.getUid();
 
                 //Set on click listener to allow users to see full article
-//                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Intent feed = new Intent(getActivity(), FeedSingleActivity.class);
-//                        feed.putExtra("feed_id", feed_id);
-//                        startActivity(feed);
-//                    }
-//                });
+                viewHolder.comments.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent feed = new Intent(getActivity(), FeedComments.class);
+                        feed.putExtra("feed_id", feed_id);
+                        startActivity(feed);
+                    }
+                });
 
                 final String title = model.getTitle();
                 final String content = model.getContent();
@@ -239,6 +239,7 @@ public class FeedTab extends Fragment implements View.OnClickListener{
 
         View mView;
         ImageButton like;
+        ImageButton comments;
         ImageButton options;
         DatabaseReference likes;
         DatabaseReference likeCountDB;
@@ -261,6 +262,7 @@ public class FeedTab extends Fragment implements View.OnClickListener{
             postedBy = mView.findViewById(R.id.postedBy);
             options = mView.findViewById(R.id.options);
             postedByImage = mView.findViewById(R.id.postedByImage);
+            comments = mView.findViewById(R.id.comment);
 
             context = mView.getContext();
 
