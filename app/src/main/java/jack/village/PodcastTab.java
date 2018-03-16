@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -16,6 +17,7 @@ import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridLayout;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -37,6 +39,7 @@ public class PodcastTab extends Fragment {
 
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeLayout;
+    private GridLayoutManager gridLayoutManager;
 
     private List<PodcastRSSModel> feedList;
     List<PodcastRSSModel> items = new ArrayList<>();
@@ -56,7 +59,9 @@ public class PodcastTab extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         swipeLayout = view.findViewById(R.id.swipeRefreshLayout);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        //Set layout manager to a grid layout which displays two items in each row
+        gridLayoutManager = new GridLayoutManager(getContext(), 2, GridLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(gridLayoutManager);
 
         //If there is an internet connection Call fetchFeed on creation
         if (internet_connection()) {

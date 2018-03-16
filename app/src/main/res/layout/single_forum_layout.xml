@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:id="@+id/feedCard">
+    android:id="@+id/forumCard">
 
 
             <LinearLayout
@@ -44,7 +44,7 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/feedImage"
+                android:id="@+id/forumImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
@@ -60,13 +60,13 @@
 
                 <ImageButton
                     android:id="@+id/like"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@mipmap/ic_favorite_black_24dp"
                     android:tint="#D3D3D3"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:padding="5dp"
+                    android:padding="10dp"
                     android:background="@android:color/transparent"/>
 
                 <TextView
@@ -78,13 +78,13 @@
 
                 <ImageButton
                     android:id="@+id/comment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
                     android:src="@mipmap/ic_comment_black_24dp"
                     android:tint="#D3D3D3"
                     android:paddingStart="10dp"
                     android:paddingEnd="10dp"
-                    android:padding="5dp"
+                    android:padding="10dp"
                     android:background="@android:color/transparent"/>
 
                 <TextView
@@ -97,7 +97,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/feedTitle"
+                android:id="@+id/forumTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -110,7 +110,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/feedContent"
+                android:id="@+id/forumContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -120,6 +120,19 @@
                 android:paddingEnd="10dp"
                 android:padding="5dp"
                 android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/readMore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/more"
+                android:textSize="14sp"
+                android:scrollHorizontally="false"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:padding="5dp"
+                android:textColor="@color/colorAccent" />
 
     <View
         android:layout_width="match_parent"

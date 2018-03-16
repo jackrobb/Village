@@ -3,19 +3,19 @@ package jack.village;
  * Created by jack on 08/03/2018
  */
 
-public class FeedModel {
+public class ForumModel {
 
     //Model for the news feed
 
     private String title, content, image, userName, uid, email;
 
-    public FeedModel(){
+    public ForumModel(){
 
     }
 
 
 
-    public FeedModel(String title, String content, String image, String uid, String userName, String email) {
+    public ForumModel(String title, String content, String image, String uid, String userName, String email) {
         this.title = title;
         this.userName = userName;
         this.content = content;

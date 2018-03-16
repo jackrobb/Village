@@ -30,24 +30,23 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import static android.view.View.INVISIBLE;
 import static android.widget.GridLayout.VERTICAL;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FeedTab extends Fragment implements View.OnClickListener{
+public class ForumTab extends Fragment implements View.OnClickListener{
 
     private FloatingActionButton createPost;
-    private RecyclerView feedList;
+    private RecyclerView forumList;
     private DatabaseReference database;
     private FirebaseAuth auth;
     private boolean isLiked = false;
     private DatabaseReference like;
     private String posterEmail;
 
-    public FeedTab() {
+    public ForumTab() {
         // Required empty public constructor
     }
 
@@ -55,10 +54,10 @@ public class FeedTab extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_tab_feed, container, false);
+        View view = inflater.inflate(R.layout.fragment_tab_forum, container, false);
 
-        //Get reference to Feed and likes database
-        database = FirebaseDatabase.getInstance().getReference().child("Feed");
+        //Get reference to forum and likes database
+        database = FirebaseDatabase.getInstance().getReference().child("Forum");
         like = FirebaseDatabase.getInstance().getReference().child("Like");
 
         //Keep the data synced to save user data and improve load times
@@ -68,14 +67,14 @@ public class FeedTab extends Fragment implements View.OnClickListener{
         createPost = view.findViewById(R.id.createPost);
         createPost.setOnClickListener(this);
 
-        feedList = view.findViewById(R.id.feedList);
+        forumList = view.findViewById(R.id.forumList);
 
-        //Set layout manager to control the flow of the feeds
+        //Set layout manager to control the flow of the forums
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), VERTICAL, true);
         linearLayoutManager.setStackFromEnd(true);
 
-        feedList.setHasFixedSize(true);
-        feedList.setLayoutManager(linearLayoutManager);
+        forumList.setHasFixedSize(true);
+        forumList.setLayoutManager(linearLayoutManager);
 
         //Get reference to auth database
         auth = FirebaseAuth.getInstance();
@@ -85,7 +84,7 @@ public class FeedTab extends Fragment implements View.OnClickListener{
 
     public void onResume(){
         super.onResume();
-        //Only allow logged in users to access the new feed button
+        //Only allow logged in users to access the new forum button
         if (auth.getCurrentUser() == null) {
             createPost.hide();
         }
@@ -95,29 +94,29 @@ public class FeedTab extends Fragment implements View.OnClickListener{
     public void onStart(){
         super.onStart();
 
-        //Order feeds by time
+        //Order forums by time
         Query query = database.orderByChild("timestamp");
 
-        FirebaseRecyclerAdapter<FeedModel, FeedViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<FeedModel, FeedViewHolder>(
-                FeedModel.class,
-                R.layout.single_feed_layout,
-                FeedViewHolder.class,
+        FirebaseRecyclerAdapter<ForumModel, ForumViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<ForumModel, ForumViewHolder>(
+                ForumModel.class,
+                R.layout.single_forum_layout,
+                ForumViewHolder.class,
                 query
         ) {
             @Override
-            protected void populateViewHolder(final FeedViewHolder viewHolder, final FeedModel model, int position) {
+            protected void populateViewHolder(final ForumViewHolder viewHolder, final ForumModel model, int position) {
 
-                //Set feed_id to the current postion key
-                final String feed_id = getRef(position).getKey();
+                //Set forum_id to the current postion key
+                final String forum_id = getRef(position).getKey();
 
-                //For each feed item set all the content
+                //For each forum item set all the content
                 viewHolder.setPostedBy(model.getUserName());
                 viewHolder.setTitle(model.getTitle());
                 viewHolder.setContent(model.getContent());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
-                viewHolder.setLike(feed_id);
-                viewHolder.setLikeCount(feed_id);
-                viewHolder.setCommentCount(feed_id);
+                viewHolder.setLike(forum_id);
+                viewHolder.setLikeCount(forum_id);
+                viewHolder.setCommentCount(forum_id);
 
                 final String uid = model.getUid();
 
@@ -125,9 +124,18 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                 viewHolder.comments.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent feed = new Intent(getActivity(), FeedComments.class);
-                        feed.putExtra("feed_id", feed_id);
-                        startActivity(feed);
+                        Intent forum = new Intent(getActivity(), ForumComments.class);
+                        forum.putExtra("forum_id", forum_id);
+                        startActivity(forum);
+                    }
+                });
+
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent forum = new Intent(getActivity(), ForumComments.class);
+                        forum.putExtra("forum_id", forum_id);
+                        startActivity(forum);
                     }
                 });
 
@@ -145,9 +153,9 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                         MenuInflater inflater = popup.getMenuInflater();
                         if(auth.getCurrentUser() != null) {
                             if (auth.getCurrentUser().getUid().equals(uid)) {
-                                inflater.inflate(R.menu.feed_menu, popup.getMenu());
+                                inflater.inflate(R.menu.forum_menu, popup.getMenu());
                             }else{
-                                inflater.inflate(R.menu.feed_menu_user, popup.getMenu());
+                                inflater.inflate(R.menu.forum_menu_user, popup.getMenu());
                             }
                         }
 
@@ -162,8 +170,8 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                                 switch (menuItem.getItemId()) {
                                     //Allow user to delete post
                                     case R.id.delete:
-                                        like.child(feed_id).removeValue();
-                                        database.child(feed_id).removeValue();
+                                        like.child(forum_id).removeValue();
+                                        database.child(forum_id).removeValue();
                                         break;
                                     case R.id.share:
                                         Intent sendIntent = new Intent();
@@ -193,14 +201,14 @@ public class FeedTab extends Fragment implements View.OnClickListener{
                                     //If true allow user to select or deselect icon
                                     if(isLiked) {
                                             //If the user has already liked the post set remove their like
-                                        if (dataSnapshot.child(feed_id).hasChild(auth.getCurrentUser().getUid())) {
+                                        if (dataSnapshot.child(forum_id).hasChild(auth.getCurrentUser().getUid())) {
 
-                                            like.child(feed_id).child(auth.getCurrentUser().getUid()).removeValue();
+                                            like.child(forum_id).child(auth.getCurrentUser().getUid()).removeValue();
                                             isLiked = false;
 
                                         } else {
                                             //If the user has not liked the post before then add their unique ID
-                                            like.child(feed_id).child(auth.getCurrentUser().getUid()).setValue(auth.getCurrentUser().getEmail());
+                                            like.child(forum_id).child(auth.getCurrentUser().getUid()).setValue(auth.getCurrentUser().getEmail());
                                             isLiked = false;
                                         }
                                     }
@@ -221,7 +229,7 @@ public class FeedTab extends Fragment implements View.OnClickListener{
 
                     String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048";
 
-                    Glide.with(FeedTab.this)
+                    Glide.with(ForumTab.this)
                             .load(icon)
                             .apply(new RequestOptions()
                                     .circleCrop()
@@ -231,12 +239,12 @@ public class FeedTab extends Fragment implements View.OnClickListener{
             }
         };
 
-        feedList.setAdapter(firebaseRecyclerAdapter);
+        forumList.setAdapter(firebaseRecyclerAdapter);
 
     }
 
 
-    public static class FeedViewHolder extends RecyclerView.ViewHolder{
+    public static class ForumViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
         ImageButton like;
@@ -251,8 +259,9 @@ public class FeedTab extends Fragment implements View.OnClickListener{
         Context context;
         TextView postedBy;
         ImageView postedByImage;
+        TextView readMore;
 
-        public FeedViewHolder(View itemView) {
+        public ForumViewHolder(View itemView) {
             super(itemView);
 
             mView = itemView;
@@ -267,20 +276,21 @@ public class FeedTab extends Fragment implements View.OnClickListener{
             postedByImage = mView.findViewById(R.id.postedByImage);
             comments = mView.findViewById(R.id.comment);
             commentCount = mView.findViewById(R.id.commentCount);
+            readMore = mView.findViewById(R.id.readMore);
 
             context = mView.getContext();
 
             likes.keepSynced(true);
         }
 
-        public void setLike(final String feed_id) {
+        public void setLike(final String forum_id) {
             likes.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(final DataSnapshot dataSnapshot) {
                     //Ensure user is logged in
                     if (auth.getCurrentUser() != null) {
                         //If the users id has been added to the DB then they have liked the post - set icon colour to red
-                        if (dataSnapshot.child(feed_id).hasChild(auth.getCurrentUser().getUid())) {
+                        if (dataSnapshot.child(forum_id).hasChild(auth.getCurrentUser().getUid())) {
                             like.setColorFilter(Color.rgb(220, 20, 60));
                         } else {
                             //Else the user has unliked the post - set icon to default grey
@@ -329,9 +339,9 @@ public class FeedTab extends Fragment implements View.OnClickListener{
         }
 
 
-        public void setLikeCount(final String feed_id){
+        public void setLikeCount(final String forum_id){
             //Get the number of children from the likes database
-            likeCountDB = FirebaseDatabase.getInstance().getReference().child("Like").child(feed_id);
+            likeCountDB = FirebaseDatabase.getInstance().getReference().child("Like").child(forum_id);
             likeCountDB.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -350,9 +360,9 @@ public class FeedTab extends Fragment implements View.OnClickListener{
             });
         }
 
-        public void setCommentCount(final String feed_id){
+        public void setCommentCount(final String forum_id){
             //Get the number of children from the likes database
-            commentCountDB = FirebaseDatabase.getInstance().getReference().child("Comment").child(feed_id);
+            commentCountDB = FirebaseDatabase.getInstance().getReference().child("Comment").child(forum_id);
             commentCountDB.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -373,26 +383,57 @@ public class FeedTab extends Fragment implements View.OnClickListener{
 
         public void setTitle(String title){
             //Set title to title pulled from database
-            TextView feedTitle = mView.findViewById(R.id.feedTitle);
-            feedTitle.setText(title);
+            TextView forumTitle = mView.findViewById(R.id.forumTitle);
+            forumTitle.setText(title);
         }
 
         public void setContent(String content){
             //Set content from content pulled from database
-            TextView feedContent = mView.findViewById(R.id.feedContent);
-            feedContent.setText(content);
+            final TextView forumContent = mView.findViewById(R.id.forumContent);
+            forumContent.setText(content);
+
+            //Set max lines to 4 and allow users to expand and shrink the text view
+            forumContent.setMaxLines(4);
+            forumContent.post(new Runnable() {
+                @Override
+                public void run() {
+                    int lines = forumContent.getLineCount();
+                    if(lines > 4) {
+                        forumContent.setMaxLines(4);
+                        readMore.setVisibility(View.VISIBLE);
+
+                        readMore.setOnClickListener(new View.OnClickListener() {
+                            Boolean full = false;
+                            @Override
+                            public void onClick(View view) {
+
+                                if(!full) {
+                                    readMore.setText(R.string.less);
+                                    forumContent.setMaxLines(Integer.MAX_VALUE);
+                                    full = true;
+                                }else if(full){
+                                    readMore.setText(R.string.more);
+                                    forumContent.setMaxLines(4);
+                                    full = false;
+                                }
+                            }
+                        });
+
+                    }
+                }
+            });
         }
 
         public void setImage(Context context, String image){
             //Set image from image pulled from database
-            ImageView feedImage = mView.findViewById(R.id.feedImage);
+            ImageView forumImage = mView.findViewById(R.id.forumImage);
             Glide.with(context)
                     .load(image)
                     .apply(new RequestOptions()
                             .override(600, 600)
                             .centerCrop()
                             .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
-                    .into(feedImage);
+                    .into(forumImage);
 
 
         }
@@ -403,7 +444,7 @@ public class FeedTab extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.createPost:
-                startActivity(new Intent(getActivity(), FeedActivityNew.class));
+                startActivity(new Intent(getActivity(), ForumActivityNew.class));
                 break;
         }
     }

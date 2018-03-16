@@ -54,7 +54,6 @@ public class PodcastRssFeedAdapter extends RecyclerView.Adapter<PodcastRssFeedAd
     public void onBindViewHolder(viewHolder holder, int position) {
         final PodcastRSSModel PodcastRSSModel = podcastRssModels.get(position);
         ((TextView)holder.rssFeedView.findViewById(R.id.titleText)).setText(PodcastRSSModel.title);
-        ((TextView)holder.rssFeedView.findViewById(R.id.descriptionText)).setText(PodcastRSSModel.description);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

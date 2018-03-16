@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="jack.village.FeedActivityNew">
+    tools:context="jack.village.ForumActivityNew">
 
 
         <Button
-            android:id="@+id/feedSubmit"
+            android:id="@+id/forumSubmit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -20,7 +20,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/feedSubmit"
+        android:layout_above="@id/forumSubmit"
         android:layout_alignParentTop="true">
 
         <LinearLayout
@@ -30,7 +30,7 @@
 
 
             <ImageButton
-                android:id="@+id/feedImage"
+                android:id="@+id/forumImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -41,7 +41,7 @@
 
 
             <EditText
-                android:id="@+id/feedTitle"
+                android:id="@+id/forumTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
@@ -64,7 +64,7 @@
                 android:background="@color/colorAccent" />
 
             <EditText
-                android:id="@+id/feedContent"
+                android:id="@+id/forumContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"

@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
 
+        //Set drawer layout to display navigation items
         drawerLayout = findViewById(R.id.nav);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        //Hide title from the action bar
         if(getSupportActionBar() !=null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -55,22 +57,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationView navigationView = findViewById(R.id.nav_view);
 
+        //If the user is logged in show the logged in navigation drawer
         if(auth.getCurrentUser() != null)
         {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.navigation_menu);
 
         } else
+            //If its a guest user show the guest navigation drawer
         {
             navigationView.getMenu().clear();
             navigationView.inflateMenu(R.menu.navigation_menu_guest);
         }
 
+        //Set the header to display the user details
         View header=navigationView.getHeaderView(0);
         final TextView showEmail = header.findViewById(R.id.user_email);
         ImageView userImage = header.findViewById(R.id.imageView);
         final String userEmail;
 
+        //If user is logged in show user name and image
         if(user != null) {
             userEmail = auth.getCurrentUser().getEmail();
             final String user_id = auth.getCurrentUser().getUid();
@@ -104,12 +110,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .into(userImage);
         }
         else{
+            //If no user logged in set user name to guest
             showEmail.setText(R.string.Guest);
         }
 
 
         navigationView.setNavigationItemSelectedListener(this);
 
+        //If no fragment is selected go to the home fragment
         if(fragment == null) {
             fragment = new TabHome();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -133,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
 
+        //Set route for each navigation item
         if (id == R.id.home && !item.isChecked()) {
             fragment = new TabHome();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -169,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         else if (id == R.id.forum && !item.isChecked()) {
-            fragment = new FeedTab();
+            fragment = new ForumTab();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
             ft.commit();

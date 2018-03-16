@@ -45,39 +45,111 @@ import com.google.firebase.database.ValueEventListener;
 
 import static android.widget.GridLayout.VERTICAL;
 
-public class FeedComments extends AppCompatActivity {
+public class ForumComments extends AppCompatActivity {
 
-    private String feed_id;
+    private String forum_id;
     private EditText commentField;
     private RecyclerView commentList;
     private ImageButton submit;
     private String posterEmail;
-    private FirebaseRecyclerAdapter<FeedCommentModel, CommentsViewHolder> firebaseRecyclerAdapter;
+    private FirebaseRecyclerAdapter<ForumCommentModel, CommentsViewHolder> firebaseRecyclerAdapter;
 
     private FirebaseAuth auth;
     private DatabaseReference comments;
+    private DatabaseReference forum;
     private DatabaseReference users;
     private FirebaseUser user;
+    private TextView readMore;
+
+    private ImageView forumImage;
+    private TextView forumTitle;
+    private TextView forumContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed_comments);
+        setContentView(R.layout.activity_forum_comments);
 
         //Get instance of auth
         auth = FirebaseAuth.getInstance();
 
-        //Get the feed id from the feed tab
-        feed_id = getIntent().getExtras().getString("feed_id");
+        //Get the forum id from the forum tab
+        forum_id = getIntent().getExtras().getString("forum_id");
 
         //Get reference to Comments database
-        comments = FirebaseDatabase.getInstance().getReference().child("Comment").child(feed_id);
+        comments = FirebaseDatabase.getInstance().getReference().child("Comment").child(forum_id);
+        forum = FirebaseDatabase.getInstance().getReference().child("Forum").child(forum_id);
 
+        //Store comments to improve performance
         comments.keepSynced(true);
 
         commentField = findViewById(R.id.comment);
         commentList = findViewById(R.id.commentList);
         submit = findViewById(R.id.send);
+
+        forumTitle = findViewById(R.id.forumTitle);
+        forumImage = findViewById(R.id.forumImage);
+        forumContent = findViewById(R.id.forumContent);
+        readMore = findViewById(R.id.readMore);
+
+        //Add the details for forum the comments relate to
+        forum.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+               String title = dataSnapshot.child("title").getValue().toString();
+               String content = dataSnapshot.child("content").getValue().toString();
+               String image = dataSnapshot.child("image").getValue().toString();
+
+                forumTitle.setText(title);
+                forumContent.setText(content);
+
+                Glide.with(ForumComments.this)
+                        .load(image)
+                        .apply(new RequestOptions()
+                                .override(600, 600)
+                                .centerCrop()
+                                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                        .into(forumImage);
+
+                //Set max lines to four to reduce the amount of space the text view takes up
+                forumContent.setMaxLines(4);
+
+                //Allow user to expand and shrink the text view content
+                forumContent.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int lines = forumContent.getLineCount();
+                        if(lines > 4) {
+                            forumContent.setMaxLines(4);
+                            readMore.setVisibility(View.VISIBLE);
+
+                            readMore.setOnClickListener(new View.OnClickListener() {
+                                Boolean full = false;
+                                @Override
+                                public void onClick(View view) {
+
+                                    if(!full) {
+                                        readMore.setText(R.string.less);
+                                        forumContent.setMaxLines(Integer.MAX_VALUE);
+                                        full = true;
+                                    }else if(full){
+                                        readMore.setText(R.string.more);
+                                        forumContent.setMaxLines(4);
+                                        full = false;
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         if(auth.getCurrentUser() != null) {
             user = auth.getCurrentUser();
@@ -87,12 +159,13 @@ public class FeedComments extends AppCompatActivity {
             submit.setVisibility(View.INVISIBLE);
             commentField.setInputType(InputType.TYPE_NULL);
 
+            //If the user is not logged in remove the edit text field and notify them to login
             String loggedIn = getResources().getString(R.string.logged);
             SpannableString loginLink = new SpannableString(loggedIn);
             ClickableSpan clickableSpan = new ClickableSpan() {
                 @Override
                 public void onClick(View textView) {
-                    startActivity(new Intent(FeedComments.this, LoginActivity.class));
+                    startActivity(new Intent(ForumComments.this, LoginActivity.class));
                 }
                 @Override
                 public void updateDrawState(TextPaint ds) {
@@ -106,35 +179,35 @@ public class FeedComments extends AppCompatActivity {
             commentField.setHighlightColor(getResources().getColor(R.color.colorAccent));
         }
 
-        //Set layout manager to control the flow of the feeds
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(FeedComments.this, VERTICAL, false);
+        //Set layout manager to control the flow of the forums
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ForumComments.this, VERTICAL, true);
         linearLayoutManager.setStackFromEnd(true);
 
         commentList.setHasFixedSize(true);
         commentList.setLayoutManager(linearLayoutManager);
 
+        //Set title bar to display Comments
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Comments");
         }
 
+        //On submit execute the post method if internet is available
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (internet_connection()) {
                     post();
                 }else{
-                    Toast.makeText(FeedComments.this, "Internet Connection Required", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ForumComments.this, "Internet Connection Required", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
     }
 
     //Method to check if the device has an internet connection
     boolean internet_connection(){
-        ConnectivityManager connectionManager = (ConnectivityManager)FeedComments.this.getSystemService(Context.CONNECTIVITY_SERVICE);
-
+        ConnectivityManager connectionManager = (ConnectivityManager)ForumComments.this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = connectionManager.getActiveNetworkInfo();
         boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
         return isConnected;
@@ -145,32 +218,36 @@ public class FeedComments extends AppCompatActivity {
     public void onStart(){
         super.onStart();
 
-        //Order feeds by time
+        //Order forums by time
         Query query = comments.orderByChild("timestamp");
 
-        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<FeedCommentModel, CommentsViewHolder>(
-                FeedCommentModel.class,
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<ForumCommentModel, CommentsViewHolder>(
+                ForumCommentModel.class,
                 R.layout.single_comment_layout,
                 CommentsViewHolder.class,
                 query
         ) {
             @Override
-            protected void populateViewHolder(final CommentsViewHolder viewHolder, final FeedCommentModel model, int position) {
+            protected void populateViewHolder(final CommentsViewHolder viewHolder, final ForumCommentModel model, int position) {
 
+                //Get current comment id
                 final String comment_id = getRef(position).getKey();
 
+                //Set the user name and content of each comment
                 viewHolder.setUserName(model.getUserName());
                 viewHolder.setComment(model.getComment());
 
+                //Set sting uid to user uid
                 final String uid = model.getUid();
 
+                //If an email exists pull image for user
                 if(model.getEmail() != null) {
                     posterEmail = model.getEmail();
                     String hash = MD5Util.md5Hex(posterEmail);
 
                     String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048";
 
-                    Glide.with(FeedComments.this)
+                    Glide.with(ForumComments.this)
                             .load(icon)
                             .apply(new RequestOptions()
                                     .circleCrop()
@@ -180,13 +257,15 @@ public class FeedComments extends AppCompatActivity {
 
 
 
+                //Long on click listener to allow users to delete their own comments
                 viewHolder.singleComment.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
 
                         if (auth.getCurrentUser() != null) {
+                            //User must be the creator of the comment to delete it
                             if (auth.getCurrentUser().getUid().equals(uid)) {
-                                new AlertDialog.Builder(FeedComments.this)
+                                new AlertDialog.Builder(ForumComments.this)
                                         .setMessage("Delete Post?")
                                         .setCancelable(false)
                                         .setNegativeButton("Cancel", null)
@@ -205,6 +284,7 @@ public class FeedComments extends AppCompatActivity {
             }
         };
 
+        //Set adaptor to recycler adapter and return to the top of the feed
         commentList.setAdapter(firebaseRecyclerAdapter);
         commentList.scrollToPosition(firebaseRecyclerAdapter.getItemCount() -1);
 
@@ -237,7 +317,7 @@ public class FeedComments extends AppCompatActivity {
                                     if(task.isSuccessful()){
                                         commentField.setText("");
                                         commentList.scrollToPosition(firebaseRecyclerAdapter.getItemCount() -1);
-                                        View view = FeedComments.this.getCurrentFocus();
+                                        View view = ForumComments.this.getCurrentFocus();
                                         if (view != null) {
                                             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                                             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
@@ -286,6 +366,7 @@ public class FeedComments extends AppCompatActivity {
             TextView commentBox = mView.findViewById(R.id.comment);
             commentBox.setText(comment);
         }
+
 
     }
 

@@ -6,18 +6,18 @@ import java.security.PublicKey;
  * Created by jack on 08/03/2018
  */
 
-public class FeedCommentModel {
+public class ForumCommentModel {
 
-    //Model for the news feed
+    //Model for the news forum
 
     private String comment, userName, uid, email;
 
-    public FeedCommentModel() {
+    public ForumCommentModel() {
 
     }
 
 
-    public FeedCommentModel(String comment, String uid, String userName, String email) {
+    public ForumCommentModel(String comment, String uid, String userName, String email) {
         this.comment = comment;
         this.userName = userName;
         this.uid = uid;
