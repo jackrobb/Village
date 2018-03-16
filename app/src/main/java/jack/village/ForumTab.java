@@ -14,10 +14,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -45,6 +47,8 @@ public class ForumTab extends Fragment implements View.OnClickListener{
     private boolean isLiked = false;
     private DatabaseReference like;
     private String posterEmail;
+    private EditText search;
+    private ImageButton submit;
 
     public ForumTab() {
         // Required empty public constructor
@@ -63,6 +67,18 @@ public class ForumTab extends Fragment implements View.OnClickListener{
         //Keep the data synced to save user data and improve load times
         database.keepSynced(true);
         like.keepSynced(true);
+
+        search = view.findViewById(R.id.search);
+        submit = view.findViewById(R.id.searchBtn);
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String searchResult = search.getText().toString();
+                searchQuery(searchResult);
+                search.setText("");
+            }
+        });
 
         createPost = view.findViewById(R.id.createPost);
         createPost.setOnClickListener(this);
@@ -122,15 +138,6 @@ public class ForumTab extends Fragment implements View.OnClickListener{
 
                 //Set on click listener to allow users to see full article
                 viewHolder.comments.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent forum = new Intent(getActivity(), ForumComments.class);
-                        forum.putExtra("forum_id", forum_id);
-                        startActivity(forum);
-                    }
-                });
-
-                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent forum = new Intent(getActivity(), ForumComments.class);
@@ -241,6 +248,147 @@ public class ForumTab extends Fragment implements View.OnClickListener{
 
         forumList.setAdapter(firebaseRecyclerAdapter);
 
+    }
+
+    //Allow users to search forum for topics
+    public void searchQuery(String searchResult){
+        //Order forums by user search term
+        Query searchQuery = database.orderByChild("title").startAt(searchResult).endAt(searchResult + "\uf8ff");
+
+        FirebaseRecyclerAdapter<ForumModel, ForumViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<ForumModel, ForumViewHolder>(
+                ForumModel.class,
+                R.layout.single_forum_layout,
+                ForumViewHolder.class,
+                searchQuery
+        ) {
+            @Override
+            protected void populateViewHolder(final ForumViewHolder viewHolder, final ForumModel model, int position) {
+
+                //Set forum_id to the current postion key
+                final String forum_id = getRef(position).getKey();
+
+                //For each forum item set all the content
+                viewHolder.setPostedBy(model.getUserName());
+                viewHolder.setTitle(model.getTitle());
+                viewHolder.setContent(model.getContent());
+                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.setLike(forum_id);
+                viewHolder.setLikeCount(forum_id);
+                viewHolder.setCommentCount(forum_id);
+
+                final String uid = model.getUid();
+
+                //Set on click listener to allow users to see full article
+                viewHolder.comments.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent forum = new Intent(getActivity(), ForumComments.class);
+                        forum.putExtra("forum_id", forum_id);
+                        startActivity(forum);
+                    }
+                });
+
+                final String title = model.getTitle();
+                final String content = model.getContent();
+                final String imageUrl = model.getImage();
+
+                final String share = imageUrl + "\n\n" + title + "\n\n" + content;
+
+                //Set on click listener to display a pop up menu
+                viewHolder.options.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        PopupMenu popup = new PopupMenu(getContext(), view);
+                        MenuInflater inflater = popup.getMenuInflater();
+                        if(auth.getCurrentUser() != null) {
+                            if (auth.getCurrentUser().getUid().equals(uid)) {
+                                inflater.inflate(R.menu.forum_menu, popup.getMenu());
+                            }else{
+                                inflater.inflate(R.menu.forum_menu_user, popup.getMenu());
+                            }
+                        }
+
+
+                        popup.show();
+
+                        //Set on click listeners to menu items
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem menuItem) {
+                                //Switch between different menu options
+                                switch (menuItem.getItemId()) {
+                                    //Allow user to delete post
+                                    case R.id.delete:
+                                        like.child(forum_id).removeValue();
+                                        database.child(forum_id).removeValue();
+                                        break;
+                                    case R.id.share:
+                                        Intent sendIntent = new Intent();
+                                        sendIntent.setAction(Intent.ACTION_SEND);
+                                        sendIntent.putExtra(Intent.EXTRA_TEXT, share);
+                                        sendIntent.setType("text/plain");
+                                        startActivity(sendIntent);
+                                        break;
+                                }
+                                return false;
+                            }
+                        });
+                    }
+                });
+
+                //Set on click listener for the like button
+                viewHolder.like.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //Boolean to prevent issue with live database
+                        isLiked = true;
+
+                        like.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                //If true allow user to select or deselect icon
+                                if(isLiked) {
+                                    //If the user has already liked the post set remove their like
+                                    if (dataSnapshot.child(forum_id).hasChild(auth.getCurrentUser().getUid())) {
+
+                                        like.child(forum_id).child(auth.getCurrentUser().getUid()).removeValue();
+                                        isLiked = false;
+
+                                    } else {
+                                        //If the user has not liked the post before then add their unique ID
+                                        like.child(forum_id).child(auth.getCurrentUser().getUid()).setValue(auth.getCurrentUser().getEmail());
+                                        isLiked = false;
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                });
+
+                if(model.getEmail() != null) {
+                    posterEmail = model.getEmail();
+                    String hash = MD5Util.md5Hex(posterEmail);
+
+                    String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048";
+
+                    Glide.with(ForumTab.this)
+                            .load(icon)
+                            .apply(new RequestOptions()
+                                    .circleCrop()
+                                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                            .into(viewHolder.postedByImage);
+                }
+            }
+        };
+
+        forumList.setAdapter(firebaseRecyclerAdapter);
     }
 
 

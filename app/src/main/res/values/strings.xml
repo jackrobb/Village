@@ -46,6 +46,7 @@
     <string name="create_note">Create Note</string>
     <string name="reset_password">Reset Password</string>
     <string name="logged">You must be logged in to use this feature.</string>
+    <string name="search">Search (Case Sensitive)</string>
 
     <!--Tab Contacts-->
     <string name="church_address">25 Upper Newtownards Road \n Belfast \n BT4 3HT</string>
