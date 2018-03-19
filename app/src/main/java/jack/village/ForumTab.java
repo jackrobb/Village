@@ -9,11 +9,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -48,7 +51,6 @@ public class ForumTab extends Fragment implements View.OnClickListener{
     private DatabaseReference like;
     private String posterEmail;
     private EditText search;
-    private ImageButton submit;
 
     public ForumTab() {
         // Required empty public constructor
@@ -60,6 +62,8 @@ public class ForumTab extends Fragment implements View.OnClickListener{
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tab_forum, container, false);
 
+        super.onCreate(savedInstanceState);
+
         //Get reference to forum and likes database
         database = FirebaseDatabase.getInstance().getReference().child("Forum");
         like = FirebaseDatabase.getInstance().getReference().child("Like");
@@ -69,13 +73,28 @@ public class ForumTab extends Fragment implements View.OnClickListener{
         like.keepSynced(true);
 
         search = view.findViewById(R.id.search);
-        submit = view.findViewById(R.id.searchBtn);
 
-        submit.setOnClickListener(new View.OnClickListener() {
+        //Live search as user types
+        search.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String searchResult = search.getText().toString();
                 searchQuery(searchResult);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+            }
+        });
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 search.setText("");
             }
         });
@@ -105,6 +124,7 @@ public class ForumTab extends Fragment implements View.OnClickListener{
             createPost.hide();
         }
     }
+
 
     @Override
     public void onStart(){
@@ -253,7 +273,7 @@ public class ForumTab extends Fragment implements View.OnClickListener{
     //Allow users to search forum for topics
     public void searchQuery(String searchResult){
         //Order forums by user search term
-        Query searchQuery = database.orderByChild("title").startAt(searchResult).endAt(searchResult + "\uf8ff");
+        Query searchQuery = database.orderByChild("titleLowerCase").startAt(searchResult.toLowerCase()).endAt(searchResult.toLowerCase() + "\uf8ff");
 
         FirebaseRecyclerAdapter<ForumModel, ForumViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<ForumModel, ForumViewHolder>(
                 ForumModel.class,

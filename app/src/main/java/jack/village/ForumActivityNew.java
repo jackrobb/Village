@@ -145,6 +145,9 @@ public class ForumActivityNew extends AppCompatActivity {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             //Post each item to the database
                             post.child("title").setValue(title);
+
+                            //Set lowercase title for search functionality
+                            post.child("titleLowerCase").setValue(title.toLowerCase());
                             post.child("content").setValue(content);
                             post.child("image").setValue(download.toString());
                             post.child("uid").setValue(user.getUid());

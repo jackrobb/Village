@@ -2,34 +2,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="jack.village.ForumTab">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme">
+
     <EditText
         android:id="@+id/search"
-        android:padding="10dp"
         android:hint="@string/search"
         android:minHeight="50dp"
-        android:inputType="textMultiLine"
+        android:inputType="text"
+        android:singleLine="true"
         android:layout_alignParentTop="true"
+        android:maxLines="1"
+        android:scrollHorizontally="false"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <ImageButton
-        android:id="@+id/searchBtn"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/ic_send_black_24dp"
-        android:background="@android:color/transparent"
-        android:padding="10dp"
-        android:layout_centerVertical="true"
-        android:layout_margin="5dp"/>
-    
+        android:nextFocusUp="@id/search"
+        android:nextFocusLeft="@id/search"/>
+
+    </android.support.v7.widget.Toolbar>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/forumList"
-        android:layout_below="@+id/search"
+        android:layout_below="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

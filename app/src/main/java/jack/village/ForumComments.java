@@ -3,6 +3,7 @@ package jack.village;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -18,8 +19,10 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -50,20 +53,23 @@ public class ForumComments extends AppCompatActivity {
     private String forum_id;
     private EditText commentField;
     private RecyclerView commentList;
-    private ImageButton submit;
     private String posterEmail;
     private FirebaseRecyclerAdapter<ForumCommentModel, CommentsViewHolder> firebaseRecyclerAdapter;
 
     private FirebaseAuth auth;
     private DatabaseReference comments;
-    private DatabaseReference forum;
     private DatabaseReference users;
     private FirebaseUser user;
     private TextView readMore;
 
+    private DatabaseReference like;
+    private boolean isLiked = false;
+    private ImageButton likeBtn;
+
     private ImageView forumImage;
     private TextView forumTitle;
     private TextView forumContent;
+    private  TextView likeCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,16 +82,124 @@ public class ForumComments extends AppCompatActivity {
         //Get the forum id from the forum tab
         forum_id = getIntent().getExtras().getString("forum_id");
 
+        //Get instance of likes database
+        like = FirebaseDatabase.getInstance().getReference().child("Like");
+        like.keepSynced(true);
+
+        likeBtn = findViewById(R.id.like);
+
+        //Set on click listener for like button
+        likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Boolean to prevent issue with live database
+                isLiked = true;
+
+                like.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        //If true allow user to select or deselect icon
+                        if(isLiked) {
+                            //If the user has already liked the post set remove their like
+                            if (dataSnapshot.child(forum_id).hasChild(auth.getCurrentUser().getUid())) {
+
+                                like.child(forum_id).child(auth.getCurrentUser().getUid()).removeValue();
+                                isLiked = false;
+
+                            } else {
+                                //If the user has not liked the post before then add their unique ID
+                                like.child(forum_id).child(auth.getCurrentUser().getUid()).setValue(auth.getCurrentUser().getEmail());
+                                isLiked = false;
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
+        //Set like value event listener
+        like.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                //Ensure user is logged in
+                if (auth.getCurrentUser() != null) {
+                    //If the users id has been added to the DB then they have liked the post - set icon colour to red
+                    if (dataSnapshot.child(forum_id).hasChild(auth.getCurrentUser().getUid())) {
+                        likeBtn.setColorFilter(Color.rgb(220, 20, 60));
+                    } else {
+                        //Else the user has unliked the post - set icon to default grey
+                        likeBtn.setColorFilter(Color.rgb(211, 211, 211));
+                    }
+                } else {
+                    //If the user is not logged in, display dialogue box telling them they need an account
+                    likeBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            new android.support.v7.app.AlertDialog.Builder(getApplicationContext())
+                                    .setTitle("Sign up for Village")
+                                    .setMessage("Sign up to like this post")
+                                    .setCancelable(false)
+                                    .setNegativeButton("Cancel", null)
+                                    .setNeutralButton("Already have an account? Sign in", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            getApplication().startActivity(intent);
+                                        }
+                                    })
+                                    .setPositiveButton("Sign Up", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                                            getApplication().startActivity(intent);
+                                        }
+                                    })
+                                    .show();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        likeCount = findViewById(R.id.likeCount);
+        //Set like count for post
+        DatabaseReference likeCountDB = FirebaseDatabase.getInstance().getReference().child("Like").child(forum_id);
+        likeCountDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String likeCounter = String.valueOf(dataSnapshot.getChildrenCount());
+                if(!likeCounter.isEmpty()){
+                    likeCount.setText(likeCounter);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         //Get reference to Comments database
         comments = FirebaseDatabase.getInstance().getReference().child("Comment").child(forum_id);
-        forum = FirebaseDatabase.getInstance().getReference().child("Forum").child(forum_id);
+        DatabaseReference forum = FirebaseDatabase.getInstance().getReference().child("Forum").child(forum_id);
 
         //Store comments to improve performance
         comments.keepSynced(true);
 
         commentField = findViewById(R.id.comment);
         commentList = findViewById(R.id.commentList);
-        submit = findViewById(R.id.send);
 
         forumTitle = findViewById(R.id.forumTitle);
         forumImage = findViewById(R.id.forumImage);
@@ -156,7 +270,6 @@ public class ForumComments extends AppCompatActivity {
             //Get reference to Firebase users database
             users = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
         }else{
-            submit.setVisibility(View.INVISIBLE);
             commentField.setInputType(InputType.TYPE_NULL);
 
             //If the user is not logged in remove the edit text field and notify them to login
@@ -192,15 +305,22 @@ public class ForumComments extends AppCompatActivity {
             getSupportActionBar().setTitle("Comments");
         }
 
-        //On submit execute the post method if internet is available
-        submit.setOnClickListener(new View.OnClickListener() {
+        commentField.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        commentField.setRawInputType(InputType.TYPE_CLASS_TEXT);
+
+        //On enter execute the post method if internet is available
+        commentField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View view) {
-                if (internet_connection()) {
-                    post();
-                }else{
-                    Toast.makeText(ForumComments.this, "Internet Connection Required", Toast.LENGTH_SHORT).show();
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    if (internet_connection()) {
+                        post();
+                    }else{
+                        Toast.makeText(ForumComments.this, "Internet Connection Required", Toast.LENGTH_SHORT).show();
+                    }
+                    return true;
                 }
+                return false;
             }
         });
     }
@@ -382,7 +502,5 @@ public class ForumComments extends AppCompatActivity {
 
         return true;
     }
-
-
 
 }
