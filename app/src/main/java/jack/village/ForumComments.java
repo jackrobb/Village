@@ -265,6 +265,8 @@ public class ForumComments extends AppCompatActivity {
             }
         });
 
+
+
         if(auth.getCurrentUser() != null) {
             user = auth.getCurrentUser();
             //Get reference to Firebase users database
@@ -375,6 +377,32 @@ public class ForumComments extends AppCompatActivity {
                             .into(viewHolder.postedByImage);
                 }
 
+                viewHolder.replies.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent forum = new Intent(getApplicationContext(), CommentReplies.class);
+                        forum.putExtra("comment_id", comment_id);
+                        startActivity(forum);
+                    }
+                });
+
+                //Set reply count for the comments
+                DatabaseReference replyCountDB = FirebaseDatabase.getInstance().getReference().child("Comment Replies").child(comment_id);
+                replyCountDB.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        String replyCounter = String.valueOf(dataSnapshot.getChildrenCount());
+                        if(!replyCounter.isEmpty()){
+                            viewHolder.replyCount.setText(replyCounter);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
 
                 //Long on click listener to allow users to delete their own comments
@@ -461,8 +489,10 @@ public class ForumComments extends AppCompatActivity {
         View mView;
         TextView comment;
         TextView commentPoster;
+        TextView replies;
         ImageView postedByImage;
         LinearLayout singleComment;
+        TextView replyCount;
 
         public CommentsViewHolder(View itemView) {
             super(itemView);
@@ -473,6 +503,8 @@ public class ForumComments extends AppCompatActivity {
             commentPoster = mView.findViewById(R.id.commentPoster);
             postedByImage = mView.findViewById(R.id.postedByImage);
             singleComment = mView.findViewById(R.id.comment_single);
+            replyCount = mView.findViewById(R.id.replyCount);
+            replies = mView.findViewById(R.id.reply);
         }
 
         public void setUserName(String userName){

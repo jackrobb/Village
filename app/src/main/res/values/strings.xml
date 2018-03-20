@@ -93,6 +93,7 @@
     <string name="comment">Comment</string>
     <string name="more">Read More</string>
     <string name="less">Read Less</string>
+    <string name="reply">Replies</string>
 
     <!--Podcast-->
     <string name="content">Content</string>

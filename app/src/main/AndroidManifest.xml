@@ -87,6 +87,9 @@
         <activity android:name=".ForumComments"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
+        <activity android:name=".CommentReplies"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>
