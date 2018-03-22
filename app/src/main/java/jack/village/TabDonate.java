@@ -5,17 +5,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.wallet.AutoResolveHelper;
+import com.google.android.gms.wallet.CardInfo;
 import com.google.android.gms.wallet.CardRequirements;
 import com.google.android.gms.wallet.IsReadyToPayRequest;
 import com.google.android.gms.wallet.PaymentData;
@@ -25,7 +29,11 @@ import com.google.android.gms.wallet.PaymentsClient;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.Wallet;
 import com.google.android.gms.wallet.WalletConstants;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.stripe.android.model.Token;
+
+import org.w3c.dom.Text;
 
 import java.util.Arrays;
 
@@ -41,6 +49,8 @@ public class TabDonate extends Fragment {
     private PaymentsClient PaymentsClient;
     private NumberPicker numberPicker;
     private int amount;
+    private FirebaseRemoteConfig firebaseRemoteConfig;
+    private TextView donateContent;
 
     public TabDonate() {
         // Required empty public constructor
@@ -56,6 +66,26 @@ public class TabDonate extends Fragment {
         numberPicker = view.findViewById(R.id.numberPicker);
         numberPicker.setMinValue(1);
         numberPicker.setMaxValue(30);
+
+        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+
+        donateContent = view.findViewById(R.id.donateContent);
+
+        firebaseRemoteConfig.fetch()
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // After config data is successfully fetched, it must be activated before newly fetched
+                            // values are returned.
+                            firebaseRemoteConfig.activateFetched();
+                            Log.d("ConfigDonate", "Successful");
+                        }else{
+                            Log.d("ConfigDonate", "Unsuccessful");
+                        }
+                        fetchContent();
+                    }
+                });
 
         PaymentsClient =
                 Wallet.getPaymentsClient(getContext(),
@@ -75,6 +105,11 @@ public class TabDonate extends Fragment {
         isReadyToPay();
 
         return view;
+    }
+
+    public void fetchContent(){
+        //Update Text Fields
+        donateContent.setText(firebaseRemoteConfig.getString("Donation"));
     }
 
     private void payWithGooglePay() {
@@ -124,14 +159,13 @@ public class TabDonate extends Fragment {
                     case Activity.RESULT_OK:
 
                         PaymentData paymentData = PaymentData.getFromIntent(data);
+                        CardInfo info = paymentData.getCardInfo();
+                        UserAddress address = paymentData.getShippingAddress();
                         String rawToken = paymentData.getPaymentMethodToken().getToken();
 
                         Token stripeToken = Token.fromString(rawToken);
 
                         if (stripeToken != null) {
-
-                            Toast.makeText(getContext(),
-                                    "Got token " + stripeToken.toString(), Toast.LENGTH_LONG).show();
                         }
                         break;
                     case Activity.RESULT_CANCELED:

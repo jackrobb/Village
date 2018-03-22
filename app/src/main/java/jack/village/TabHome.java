@@ -37,8 +37,6 @@ public class TabHome extends Fragment {
 
         title = view.findViewById(R.id.home_title);
         description = view.findViewById(R.id.home_description);
-        paragraphOne = view.findViewById(R.id.home_paragraphOne);
-        paragraphTwo = view.findViewById(R.id.home_paragraphTwo);
 
         //Fetch the data from remote configuration
         firebaseRemoteConfig.fetch()
@@ -64,8 +62,6 @@ public class TabHome extends Fragment {
         //Update Text Fields
         title.setText(firebaseRemoteConfig.getString("Title"));
         description.setText(firebaseRemoteConfig.getString("Description"));
-        paragraphOne.setText(firebaseRemoteConfig.getString("ParagraphOne"));
-        paragraphTwo.setText(firebaseRemoteConfig.getString("ParagraphTwo"));
     }
 
 }
