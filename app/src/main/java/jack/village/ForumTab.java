@@ -166,6 +166,16 @@ public class ForumTab extends Fragment implements View.OnClickListener{
                     }
                 });
 
+                //Set on click listener to allow users to see full article
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent forum = new Intent(getActivity(), ForumComments.class);
+                        forum.putExtra("forum_id", forum_id);
+                        startActivity(forum);
+                    }
+                });
+
                 final String title = model.getTitle();
                 final String content = model.getContent();
                 final String imageUrl = model.getImage();
@@ -181,9 +191,9 @@ public class ForumTab extends Fragment implements View.OnClickListener{
                         if(auth.getCurrentUser() != null) {
                             if (auth.getCurrentUser().getUid().equals(uid)) {
                                 inflater.inflate(R.menu.forum_menu, popup.getMenu());
-                            }else{
-                                inflater.inflate(R.menu.forum_menu_user, popup.getMenu());
                             }
+                        }else{
+                            inflater.inflate(R.menu.forum_menu_user, popup.getMenu());
                         }
 
 
@@ -323,9 +333,9 @@ public class ForumTab extends Fragment implements View.OnClickListener{
                         if(auth.getCurrentUser() != null) {
                             if (auth.getCurrentUser().getUid().equals(uid)) {
                                 inflater.inflate(R.menu.forum_menu, popup.getMenu());
-                            }else{
-                                inflater.inflate(R.menu.forum_menu_user, popup.getMenu());
                             }
+                        }else{
+                            inflater.inflate(R.menu.forum_menu_user, popup.getMenu());
                         }
 
 

@@ -181,7 +181,7 @@ public class CommentReplies extends AppCompatActivity {
                     posterEmail = model.getEmail();
                     String hash = MD5Util.md5Hex(posterEmail);
 
-                    String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048";
+                    String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048?default=mm";
 
                     Glide.with(CommentReplies.this)
                             .load(icon)

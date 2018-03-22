@@ -367,7 +367,7 @@ public class ForumComments extends AppCompatActivity {
                     posterEmail = model.getEmail();
                     String hash = MD5Util.md5Hex(posterEmail);
 
-                    String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048";
+                    String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048?default=mm";
 
                     Glide.with(ForumComments.this)
                             .load(icon)
@@ -401,6 +401,16 @@ public class ForumComments extends AppCompatActivity {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
+                    }
+                });
+
+                //Single click on comment will show replies
+                viewHolder.singleComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent forum = new Intent(getApplicationContext(), CommentReplies.class);
+                        forum.putExtra("comment_id", comment_id);
+                        startActivity(forum);
                     }
                 });
 

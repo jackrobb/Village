@@ -1,55 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:background="@color/colorPrimaryLight"
-    tools:context="jack.village.TabDonate">
+    tools:context="jack.village.TabEvents">
+
+    <ImageButton
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_refresh_black_24dp"
+        android:background="@android:color/transparent"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
 
     <TextView
-        android:id="@+id/donate_title"
-        android:padding="10dp"
+        android:id="@+id/reload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/refresh"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:textColor="@color/colorAccent"
+        android:gravity="center"
+        android:text="@string/reload"/>
+
+    <WebView
+        android:id="@+id/webView"
         android:layout_width="wrap_content"
-        android:textSize="17sp"
-        android:layout_height="wrap_content"
-        android:text="@string/donateTitle"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"/>
-
-    <NumberPicker
-        android:id="@+id/numberPicker"
-        android:layout_width="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/donate_title"
-        android:layout_height="wrap_content" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/numberPicker">
+        android:layout_height="match_parent"/>
 
     <TextView
-        android:text="@string/donate"
-        android:id="@+id/donateContent"
+        android:id="@+id/androidPay"
+        android:text="@string/androidPay"
         android:padding="10dp"
         android:textAlignment="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
-    </ScrollView>
-
-
-    <Button
-        android:id="@+id/buy_button"
-        android:text="Donate"
-        android:textColor="@color/white"
+        android:textColor="@color/colorAccent"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"/>
+        android:layout_height="wrap_content"/>
+
 
 </RelativeLayout>

@@ -8,11 +8,11 @@
     <application
         android:name=".Village"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
@@ -83,13 +83,17 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ForumActivityNew"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ForumComments"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".CommentReplies"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".AndroidPay"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ForumComments"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
-        <activity android:name=".CommentReplies"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

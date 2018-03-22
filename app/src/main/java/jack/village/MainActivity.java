@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             String hash = MD5Util.md5Hex(userEmail);
 
-            String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048";
+            String icon = "https://www.gravatar.com/avatar/" + hash +"s=2048?default=mm";
 
             Glide.with(getApplicationContext())
                     .load(icon)

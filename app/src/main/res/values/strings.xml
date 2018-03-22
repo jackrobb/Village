@@ -12,6 +12,9 @@
     <string name="logout">Logout</string>
     <string name="reload">Error loading page \n Tap to retry</string>
 
+    <!--Pay-->
+    <string name="androidPay">Donate with Android Pay instead?</string>
+
     <!--Tab strings-->
     <string name="tab_label1">Home</string>
     <string name="tab_label2">Contact</string>
@@ -29,7 +32,7 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
-    <string name="signup">Don\'t have an account? Sign Up</string>
+    <string name="signup">No account yet? Sign Up</string>
     <string name="forgot">Forgotten Password?</string>
     <string name="already">Already have an account? Login</string>
     <string name="signup_btn">Sign Up</string>
@@ -93,7 +96,7 @@
     <string name="comment">Comment</string>
     <string name="more">Read More</string>
     <string name="less">Read Less</string>
-    <string name="reply">Replies</string>
+    <string name="reply">Comments</string>
 
     <!--Podcast-->
     <string name="content">Content</string>
