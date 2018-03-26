@@ -97,6 +97,7 @@
     <string name="more">Read More</string>
     <string name="less">Read Less</string>
     <string name="reply">Comments</string>
+    <string name="attending">Going?</string>
 
     <!--Podcast-->
     <string name="content">Content</string>

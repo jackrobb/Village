@@ -1,30 +1,56 @@
 package jack.village;
 
-
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
-public class TabEvents extends Fragment {
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
-    WebView webView;
-    ImageButton refresh;
-    TextView reload;
-    String url = "https://www.villagebelfast.com/events/";
+import static android.widget.GridLayout.VERTICAL;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class TabEvents extends Fragment implements View.OnClickListener{
+
+    private FloatingActionButton createPost;
+    private RecyclerView eventList;
+    private DatabaseReference database;
+    private FirebaseAuth auth;
+    private boolean isGoing = false;
+    private DatabaseReference attending;
+    private String admin = "jrobb6696@gmail.com";
 
     public TabEvents() {
         // Required empty public constructor
@@ -36,99 +62,277 @@ public class TabEvents extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tab_events, container, false);
 
-        webView = view.findViewById(R.id.webView);
-        refresh = view.findViewById(R.id.refresh);
-        reload = view.findViewById(R.id.reload);
+        super.onCreate(savedInstanceState);
 
-        setRetainInstance(true);
+        //Get reference to Events and going database
+        database = FirebaseDatabase.getInstance().getReference().child("Events");
+        attending = FirebaseDatabase.getInstance().getReference().child("Going");
 
-        if (internet_connection()) {
-            webView.setVisibility(View.VISIBLE);
-            load();
-        }else{
-            webView.setVisibility(View.INVISIBLE);
-            Toast.makeText(getContext(), "Internet Connection Required", Toast.LENGTH_SHORT).show();
-        }
+        //Keep the data synced to save user data and improve load times
+        database.keepSynced(true);
+        attending.keepSynced(true);
 
-        refresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (internet_connection()) {
-                    webView.setVisibility(View.VISIBLE);
-                    load();
-                }else{
-                    webView.setVisibility(View.INVISIBLE);
-                    Toast.makeText(getContext(), "Internet Connection Required", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        createPost = view.findViewById(R.id.createPost);
+        createPost.setOnClickListener(this);
 
+        eventList = view.findViewById(R.id.eventList);
 
-        webView.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                //This is the filter
-                if (event.getAction()!=KeyEvent.ACTION_DOWN)
-                    return true;
+        //Set layout manager to control the flow of the events
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), VERTICAL, true);
+        linearLayoutManager.setStackFromEnd(true);
 
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    if (webView.canGoBack()) {
-                        webView.goBack();
-                    } else {
-                        (getActivity()).onBackPressed();
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
+        eventList.setHasFixedSize(true);
+        eventList.setLayoutManager(linearLayoutManager);
 
+        //Get reference to auth database
+        auth = FirebaseAuth.getInstance();
 
         return view;
+    }
 
-}
-
-    public void load(){
-        refresh.setVisibility(View.INVISIBLE);
-        reload.setVisibility(View.INVISIBLE);
-        WiseWeWebClient myWebClient = new WiseWeWebClient();
-        webView.setWebViewClient(myWebClient);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webView.loadUrl(url);
+    public void onResume(){
+        super.onResume();
+        //Only allow admin to access the new events button
+        if(auth.getCurrentUser() == null){
+            createPost.hide();
+        }else if (auth.getCurrentUser().getEmail().equals(admin)) {
+            createPost.show();
+        }else{
+            createPost.hide();
+        }
     }
 
 
+    @Override
+    public void onStart() {
+        super.onStart();
 
-    public class WiseWeWebClient extends WebViewClient {
-        @Override
-        public void onLoadResource(WebView view, String url) {
+        //Order events by time
+        Query query = database.orderByChild("timestamp");
 
-            view.loadUrl("javascript:" +
-                    "var footer = document.getElementById(\"footer\"); footer.parentNode.removeChild(footer); " +
-                    "var header = document.getElementById(\"header\"); header.parentNode.removeChild(header); " +
-                    "var navbar = document.getElementsByClassName('mobile-nav clear')[0].style.display = 'none';" +
-                    "var navbar2 = document.getElementsByClassName('cco-nav')[0].style.display = 'none';");
-        }
+        FirebaseRecyclerAdapter<EventModel, EventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<EventModel, EventViewHolder>(
+                EventModel.class,
+                R.layout.single_event_layout,
+                EventViewHolder.class,
+                query
+        ) {
+            @Override
+            protected void populateViewHolder(final EventViewHolder viewHolder, final EventModel model, int position) {
 
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (Uri.parse(url).getHost().contains("village")) {
-                return false;
+                //Set event_id to the current postion key
+                final String event_id = getRef(position).getKey();
+
+                //For each event item set all the content
+                viewHolder.setTitle(model.getTitle());
+                viewHolder.setContent(model.getContent());
+                viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
+                viewHolder.setAttending(event_id);
+                viewHolder.setGoingCount(event_id);
+
+                //Long on click listener to allow admin to delete the event
+                viewHolder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+
+                        if (auth.getCurrentUser() != null) {
+                            //User must be the creator of the comment to delete it
+                            if (auth.getCurrentUser().getEmail().equals(admin)) {
+                                new AlertDialog.Builder(getContext())
+                                        .setMessage("Delete Event?")
+                                        .setCancelable(false)
+                                        .setNegativeButton("Cancel", null)
+                                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                attending.child(event_id).removeValue();
+                                                database.child(event_id).removeValue();
+                                            }
+                                        })
+                                        .show();
+                            }
+                        }
+                        return false;
+                    }
+                });
+
+                //Set on click listener for the like button
+                viewHolder.going.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //Boolean to prevent issue with live database
+                        isGoing = true;
+
+                        attending.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                //If true allow user to select or deselect icon
+                                if (isGoing) {
+                                    //If the user has already liked the post set remove their like
+                                    if (dataSnapshot.child(event_id).hasChild(auth.getCurrentUser().getUid())) {
+
+                                        attending.child(event_id).child(auth.getCurrentUser().getUid()).removeValue();
+                                        isGoing = false;
+
+                                    } else {
+                                        //If the user has not liked the post before then add their unique ID
+                                        attending.child(event_id).child(auth.getCurrentUser().getUid()).setValue(auth.getCurrentUser().getEmail());
+                                        isGoing = false;
+                                    }
+                                }
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                });
             }
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
-            return true;
+
+
+            };
+
+                eventList.setAdapter(firebaseRecyclerAdapter);
+        }
+
+
+
+    public static class EventViewHolder extends RecyclerView.ViewHolder{
+
+        View mView;
+        ImageButton going;
+        ImageButton options;
+        DatabaseReference attending;
+        DatabaseReference goingCountDB;
+        FirebaseAuth auth;
+        TextView goingCount;
+        Context context;
+
+        public EventViewHolder(View itemView) {
+            super(itemView);
+
+            mView = itemView;
+            going = mView.findViewById(R.id.going);
+
+            attending = FirebaseDatabase.getInstance().getReference().child("Going");
+            auth = FirebaseAuth.getInstance();
+
+            goingCount = mView.findViewById(R.id.goingCount);
+            options = mView.findViewById(R.id.options);
+
+            context = mView.getContext();
+
+            attending.keepSynced(true);
+        }
+
+        public void setAttending(final String event_id) {
+            attending.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(final DataSnapshot dataSnapshot) {
+                    //Ensure user is logged in
+                    if (auth.getCurrentUser() != null) {
+                        //If the users id has been added to the DB then they have liked the post - set icon colour to red
+                        if (dataSnapshot.child(event_id).hasChild(auth.getCurrentUser().getUid())) {
+                            going.setColorFilter(Color.rgb(143, 177, 186));
+                        } else {
+                            //Else the user has unliked the post - set icon to default grey
+                            going.setColorFilter(Color.rgb(211, 211, 211));
+                        }
+                    } else {
+                        //If the user is not logged in, display dialogue box telling them they need an account
+                        going.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                new android.support.v7.app.AlertDialog.Builder(context)
+                                        .setTitle("Sign up for Village")
+                                        .setMessage("Sign up to attend this event")
+                                        .setCancelable(false)
+                                        .setNegativeButton("Cancel", null)
+                                        .setNeutralButton("Already have an account? Sign in", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Intent intent = new Intent(context, LoginActivity.class);
+                                                context.startActivity(intent);
+                                            }
+                                        })
+                                        .setPositiveButton("Sign Up", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                Intent intent = new Intent(context, SignUpActivity.class);
+                                                context.startActivity(intent);
+                                            }
+                                        })
+                                        .show();
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
+        public void setGoingCount(final String event_id){
+            //Get the number of children from the likes database
+            goingCountDB = FirebaseDatabase.getInstance().getReference().child("Going").child(event_id);
+            goingCountDB.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    String likeCounter = String.valueOf(dataSnapshot.getChildrenCount());
+                    if(!likeCounter.isEmpty()){
+                        //Set text to display the number of likes the post has
+                        goingCount.setText(likeCounter);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+        public void setTitle(String title){
+            //Set title to title pulled from database
+            TextView eventTitle = mView.findViewById(R.id.eventTitle);
+            eventTitle.setText(title);
+        }
+
+        public void setContent(String content){
+            //Set content from content pulled from database
+            final TextView eventContent = mView.findViewById(R.id.eventContent);
+            eventContent.setText(content);
+        }
+
+        public void setImage(Context context, String image){
+            //Set image from image pulled from database
+            ImageView eventImage = mView.findViewById(R.id.eventImage);
+            Glide.with(context)
+                    .load(image)
+                    .apply(new RequestOptions()
+                            .centerCrop()
+                            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                    .into(eventImage);
+
+
+        }
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.createPost:
+                startActivity(new Intent(getActivity(), EventActivityNew.class));
+                break;
         }
     }
 
-    //Method to check if the device has an internet connection
-    boolean internet_connection(){
-        ConnectivityManager connectionManager = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = connectionManager.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        return isConnected;
-
-    }
 
 }
