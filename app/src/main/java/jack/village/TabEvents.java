@@ -10,18 +10,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -46,10 +40,10 @@ public class TabEvents extends Fragment implements View.OnClickListener{
 
     private FloatingActionButton createPost;
     private RecyclerView eventList;
-    private DatabaseReference database;
+    private DatabaseReference eventsDB;
     private FirebaseAuth auth;
     private boolean isGoing = false;
-    private DatabaseReference attending;
+    private DatabaseReference goingDB;
     private String admin = "jrobb6696@gmail.com";
 
     public TabEvents() {
@@ -64,13 +58,13 @@ public class TabEvents extends Fragment implements View.OnClickListener{
 
         super.onCreate(savedInstanceState);
 
-        //Get reference to Events and going database
-        database = FirebaseDatabase.getInstance().getReference().child("Events");
-        attending = FirebaseDatabase.getInstance().getReference().child("Going");
+        //Get reference to Events and goingIB eventsDB
+        eventsDB = FirebaseDatabase.getInstance().getReference().child("Events");
+        goingDB = FirebaseDatabase.getInstance().getReference().child("Going");
 
         //Keep the data synced to save user data and improve load times
-        database.keepSynced(true);
-        attending.keepSynced(true);
+        eventsDB.keepSynced(true);
+        goingDB.keepSynced(true);
 
         createPost = view.findViewById(R.id.createPost);
         createPost.setOnClickListener(this);
@@ -84,7 +78,7 @@ public class TabEvents extends Fragment implements View.OnClickListener{
         eventList.setHasFixedSize(true);
         eventList.setLayoutManager(linearLayoutManager);
 
-        //Get reference to auth database
+        //Get reference to auth eventsDB
         auth = FirebaseAuth.getInstance();
 
         return view;
@@ -108,7 +102,7 @@ public class TabEvents extends Fragment implements View.OnClickListener{
         super.onStart();
 
         //Order events by time
-        Query query = database.orderByChild("timestamp");
+        Query query = eventsDB.orderByChild("timestamp");
 
         FirebaseRecyclerAdapter<EventModel, EventViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<EventModel, EventViewHolder>(
                 EventModel.class,
@@ -126,7 +120,7 @@ public class TabEvents extends Fragment implements View.OnClickListener{
                 viewHolder.setTitle(model.getTitle());
                 viewHolder.setContent(model.getContent());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
-                viewHolder.setAttending(event_id);
+                viewHolder.setGoingDB(event_id);
                 viewHolder.setGoingCount(event_id);
 
                 //Long on click listener to allow admin to delete the event
@@ -143,8 +137,8 @@ public class TabEvents extends Fragment implements View.OnClickListener{
                                         .setNegativeButton("Cancel", null)
                                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog, int id) {
-                                                attending.child(event_id).removeValue();
-                                                database.child(event_id).removeValue();
+                                                goingDB.child(event_id).removeValue();
+                                                eventsDB.child(event_id).removeValue();
                                             }
                                         })
                                         .show();
@@ -155,13 +149,13 @@ public class TabEvents extends Fragment implements View.OnClickListener{
                 });
 
                 //Set on click listener for the like button
-                viewHolder.going.setOnClickListener(new View.OnClickListener() {
+                viewHolder.goingIB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //Boolean to prevent issue with live database
+                        //Boolean to prevent issue with live eventsDB
                         isGoing = true;
 
-                        attending.addValueEventListener(new ValueEventListener() {
+                        goingDB.addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -170,12 +164,12 @@ public class TabEvents extends Fragment implements View.OnClickListener{
                                     //If the user has already liked the post set remove their like
                                     if (dataSnapshot.child(event_id).hasChild(auth.getCurrentUser().getUid())) {
 
-                                        attending.child(event_id).child(auth.getCurrentUser().getUid()).removeValue();
+                                        goingDB.child(event_id).child(auth.getCurrentUser().getUid()).removeValue();
                                         isGoing = false;
 
                                     } else {
                                         //If the user has not liked the post before then add their unique ID
-                                        attending.child(event_id).child(auth.getCurrentUser().getUid()).setValue(auth.getCurrentUser().getEmail());
+                                        goingDB.child(event_id).child(auth.getCurrentUser().getUid()).setValue(auth.getCurrentUser().getEmail());
                                         isGoing = false;
                                     }
                                 }
@@ -202,9 +196,9 @@ public class TabEvents extends Fragment implements View.OnClickListener{
     public static class EventViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
-        ImageButton going;
-        ImageButton options;
-        DatabaseReference attending;
+        ImageButton goingIB;
+        ImageButton optionsIB;
+        DatabaseReference goingDB;
         DatabaseReference goingCountDB;
         FirebaseAuth auth;
         TextView goingCount;
@@ -214,35 +208,35 @@ public class TabEvents extends Fragment implements View.OnClickListener{
             super(itemView);
 
             mView = itemView;
-            going = mView.findViewById(R.id.going);
+            goingIB = mView.findViewById(R.id.going);
 
-            attending = FirebaseDatabase.getInstance().getReference().child("Going");
+            goingDB = FirebaseDatabase.getInstance().getReference().child("Going");
             auth = FirebaseAuth.getInstance();
 
             goingCount = mView.findViewById(R.id.goingCount);
-            options = mView.findViewById(R.id.options);
+            optionsIB = mView.findViewById(R.id.options);
 
             context = mView.getContext();
 
-            attending.keepSynced(true);
+            goingDB.keepSynced(true);
         }
 
-        public void setAttending(final String event_id) {
-            attending.addValueEventListener(new ValueEventListener() {
+        public void setGoingDB(final String event_id) {
+            goingDB.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(final DataSnapshot dataSnapshot) {
                     //Ensure user is logged in
                     if (auth.getCurrentUser() != null) {
                         //If the users id has been added to the DB then they have liked the post - set icon colour to red
                         if (dataSnapshot.child(event_id).hasChild(auth.getCurrentUser().getUid())) {
-                            going.setColorFilter(Color.rgb(143, 177, 186));
+                            goingIB.setColorFilter(Color.rgb(143, 177, 186));
                         } else {
                             //Else the user has unliked the post - set icon to default grey
-                            going.setColorFilter(Color.rgb(211, 211, 211));
+                            goingIB.setColorFilter(Color.rgb(211, 211, 211));
                         }
                     } else {
                         //If the user is not logged in, display dialogue box telling them they need an account
-                        going.setOnClickListener(new View.OnClickListener() {
+                        goingIB.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 new android.support.v7.app.AlertDialog.Builder(context)
@@ -278,16 +272,16 @@ public class TabEvents extends Fragment implements View.OnClickListener{
 
 
         public void setGoingCount(final String event_id){
-            //Get the number of children from the likes database
+            //Get the number of children from the likes eventsDB
             goingCountDB = FirebaseDatabase.getInstance().getReference().child("Going").child(event_id);
             goingCountDB.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    String likeCounter = String.valueOf(dataSnapshot.getChildrenCount());
-                    if(!likeCounter.isEmpty()){
+                    String goingCounter = String.valueOf(dataSnapshot.getChildrenCount());
+                    if(!goingCounter.isEmpty()){
                         //Set text to display the number of likes the post has
-                        goingCount.setText(likeCounter);
+                        goingCount.setText(goingCounter);
                     }
                 }
 
@@ -299,19 +293,19 @@ public class TabEvents extends Fragment implements View.OnClickListener{
         }
 
         public void setTitle(String title){
-            //Set title to title pulled from database
+            //Set title to title pulled from eventsDB
             TextView eventTitle = mView.findViewById(R.id.eventTitle);
             eventTitle.setText(title);
         }
 
         public void setContent(String content){
-            //Set content from content pulled from database
+            //Set content from content pulled from eventsDB
             final TextView eventContent = mView.findViewById(R.id.eventContent);
             eventContent.setText(content);
         }
 
         public void setImage(Context context, String image){
-            //Set image from image pulled from database
+            //Set image from image pulled from eventsDB
             ImageView eventImage = mView.findViewById(R.id.eventImage);
             Glide.with(context)
                     .load(image)

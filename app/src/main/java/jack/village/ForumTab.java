@@ -203,7 +203,7 @@ public class ForumTab extends Fragment implements View.OnClickListener{
                         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                             @Override
                             public boolean onMenuItemClick(MenuItem menuItem) {
-                                //Switch between different menu options
+                                //Switch between different menu optionsIB
                                 switch (menuItem.getItemId()) {
                                     //Allow user to delete post
                                     case R.id.delete:
@@ -345,7 +345,7 @@ public class ForumTab extends Fragment implements View.OnClickListener{
                         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                             @Override
                             public boolean onMenuItemClick(MenuItem menuItem) {
-                                //Switch between different menu options
+                                //Switch between different menu optionsIB
                                 switch (menuItem.getItemId()) {
                                     //Allow user to delete post
                                     case R.id.delete:
