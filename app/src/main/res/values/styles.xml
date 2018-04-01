@@ -15,7 +15,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:fontFamily">@font/village</item>
+        <item name="android:fontFamily">font-family: 'Open Sans', sans-serif;</item>
     </style>
 
     <style name="ToolBarStyle" parent="Theme.AppCompat">

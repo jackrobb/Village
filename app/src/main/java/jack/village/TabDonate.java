@@ -8,16 +8,13 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -129,6 +126,7 @@ public class TabDonate extends Fragment {
             //Hide aspects of the webview that are not required for the user to see
             view.loadUrl("javascript:" +
                     "var social = document.getElementById(\"sharing-buttons\"); social.parentNode.removeChild(social); " +
+                    "var navbar1 = document.getElementsByClassName('donor-campaign-name')[0].style.display = 'none';" +
                     "var navbar = document.getElementsByClassName('page-header')[0].style.display = 'none';");
         }
 

@@ -119,6 +119,7 @@ public class TabEvents extends Fragment implements View.OnClickListener{
                 //For each event item set all the content
                 viewHolder.setTitle(model.getTitle());
                 viewHolder.setContent(model.getContent());
+                viewHolder.setDate(model.getDate());
                 viewHolder.setImage(getActivity().getApplicationContext(), model.getImage());
                 viewHolder.setGoingDB(event_id);
                 viewHolder.setGoingCount(event_id);
@@ -148,7 +149,8 @@ public class TabEvents extends Fragment implements View.OnClickListener{
                     }
                 });
 
-                //Set on click listener for the like button
+
+                //Set on click listener for the going button
                 viewHolder.goingIB.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -161,14 +163,14 @@ public class TabEvents extends Fragment implements View.OnClickListener{
 
                                 //If true allow user to select or deselect icon
                                 if (isGoing) {
-                                    //If the user has already liked the post set remove their like
+                                    //If the user is already going to the event set remove them
                                     if (dataSnapshot.child(event_id).hasChild(auth.getCurrentUser().getUid())) {
 
                                         goingDB.child(event_id).child(auth.getCurrentUser().getUid()).removeValue();
                                         isGoing = false;
 
                                     } else {
-                                        //If the user has not liked the post before then add their unique ID
+                                        //If the user is not going to the event then add their unique ID
                                         goingDB.child(event_id).child(auth.getCurrentUser().getUid()).setValue(auth.getCurrentUser().getEmail());
                                         isGoing = false;
                                     }
@@ -227,11 +229,11 @@ public class TabEvents extends Fragment implements View.OnClickListener{
                 public void onDataChange(final DataSnapshot dataSnapshot) {
                     //Ensure user is logged in
                     if (auth.getCurrentUser() != null) {
-                        //If the users id has been added to the DB then they have liked the post - set icon colour to red
+                        //If the users id has been added to the DB then they are going - set icon colour to blue
                         if (dataSnapshot.child(event_id).hasChild(auth.getCurrentUser().getUid())) {
                             goingIB.setColorFilter(Color.rgb(143, 177, 186));
                         } else {
-                            //Else the user has unliked the post - set icon to default grey
+                            //Else the user has unselected the going icon - set icon to default grey
                             goingIB.setColorFilter(Color.rgb(211, 211, 211));
                         }
                     } else {
@@ -272,7 +274,7 @@ public class TabEvents extends Fragment implements View.OnClickListener{
 
 
         public void setGoingCount(final String event_id){
-            //Get the number of children from the likes eventsDB
+            //Get the number of children from the going eventsDB
             goingCountDB = FirebaseDatabase.getInstance().getReference().child("Going").child(event_id);
             goingCountDB.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -280,7 +282,7 @@ public class TabEvents extends Fragment implements View.OnClickListener{
 
                     String goingCounter = String.valueOf(dataSnapshot.getChildrenCount());
                     if(!goingCounter.isEmpty()){
-                        //Set text to display the number of likes the post has
+                        //Set text to display the number of people going
                         goingCount.setText(goingCounter);
                     }
                 }
@@ -296,6 +298,12 @@ public class TabEvents extends Fragment implements View.OnClickListener{
             //Set title to title pulled from eventsDB
             TextView eventTitle = mView.findViewById(R.id.eventTitle);
             eventTitle.setText(title);
+        }
+
+        public void setDate(String date){
+            //Set title to title pulled from eventsDB
+            TextView eventDate = mView.findViewById(R.id.eventDate);
+            eventDate.setText(date);
         }
 
         public void setContent(String content){

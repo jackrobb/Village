@@ -7,7 +7,7 @@ public class EventModel {
 
     //Model for the news feed
 
-    private String title, content, image;
+    private String title, content, image, date;
 
     public EventModel(){
 
@@ -15,10 +15,11 @@ public class EventModel {
 
 
 
-    public EventModel(String title, String content, String image) {
+    public EventModel(String title, String content, String image, String date) {
         this.title = title;
         this.content = content;
         this.image = image;
+        this.date = date;
 
     }
 
@@ -40,5 +41,15 @@ public class EventModel {
 
     public String getImage() {
         return image;
+    }
+
+    public void setImage(String image) { this.image = image; }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

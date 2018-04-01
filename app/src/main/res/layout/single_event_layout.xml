@@ -4,20 +4,34 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_margin="10dp"
     android:id="@+id/forumCard">
 
     <TextView
-        android:id="@+id/eventTitle"
+    android:id="@+id/eventTitle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:scrollHorizontally="false"
+    android:textColor="@color/black"
+    android:textSize="17sp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:padding="10dp"
+    android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/eventDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:scrollHorizontally="false"
         android:textColor="@color/colorAccent"
+        android:textAlignment="center"
         android:textSize="17sp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:padding="10dp"
-        android:textStyle="bold" />
+        android:padding="10dp" />
 
     <TextView
         android:id="@+id/eventContent"

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,9 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +33,7 @@ public class EventActivityNew extends AppCompatActivity {
     private ImageButton eventImage;
     private EditText eventTitle;
     private EditText eventContent;
+    private EditText eventDate;
     private ProgressDialog progressDialog;
 
     private FirebaseUser user;
@@ -76,6 +74,7 @@ public class EventActivityNew extends AppCompatActivity {
         eventImage = findViewById(R.id.eventImage);
         eventTitle = findViewById(R.id.eventTitle);
         eventContent = findViewById(R.id.eventContent);
+        eventDate = findViewById(R.id.eventDate);
         Button submit = findViewById(R.id.eventSubmit);
 
         progressDialog = new ProgressDialog(EventActivityNew.this);
@@ -110,11 +109,19 @@ public class EventActivityNew extends AppCompatActivity {
         //Get the user inputs from the text fields
         final String title = eventTitle.getText().toString().trim();
         final String content = eventContent.getText().toString().trim();
+        final String date = eventDate.getText().toString().trim();
 
         //If there is no title break and set focus
         if(title.isEmpty()){
             eventTitle.setError("Title Required");
             eventTitle.requestFocus();
+            return;
+        }
+
+        //If there is no title break and set focus
+        if(date.isEmpty()){
+            eventDate.setError("Date Required");
+            eventDate.requestFocus();
             return;
         }
 
@@ -148,6 +155,7 @@ public class EventActivityNew extends AppCompatActivity {
 
                             //Set lowercase title for search functionality
                             post.child("titleLowerCase").setValue(title.toLowerCase());
+                            post.child("date").setValue(date);
                             post.child("content").setValue(content);
                             post.child("image").setValue(download.toString());
                         }
