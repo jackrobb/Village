@@ -53,6 +53,19 @@
             android:textSize="12sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/readMore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/more"
+            android:textSize="14sp"
+            android:scrollHorizontally="false"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:padding="5dp"
+            android:textColor="@color/colorAccent" />
+
     </LinearLayout>
 
     </LinearLayout>

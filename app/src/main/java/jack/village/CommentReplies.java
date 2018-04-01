@@ -281,6 +281,7 @@ public class CommentReplies extends AppCompatActivity {
         LinearLayout singleComment;
         TextView reply;
         TextView replyCount;
+        TextView readMore;
 
         public CommentsViewHolder(View itemView) {
             super(itemView);
@@ -295,6 +296,7 @@ public class CommentReplies extends AppCompatActivity {
             replyCount = mView.findViewById(R.id.replyCount);
             replyCount.setVisibility(View.GONE);
             reply.setVisibility(View.GONE);
+            readMore = mView.findViewById(R.id.readMore);
         }
 
         public void setUserName(String userName){
@@ -305,8 +307,39 @@ public class CommentReplies extends AppCompatActivity {
 
         public void setComment(String comment){
             //Set content from content pulled from database
-            TextView commentBox = mView.findViewById(R.id.comment);
+            final TextView commentBox = mView.findViewById(R.id.comment);
             commentBox.setText(comment);
+
+            //Set max lines to 4 and allow users to expand and shrink the text view
+            commentBox.setMaxLines(4);
+            commentBox.post(new Runnable() {
+                @Override
+                public void run() {
+                    int lines = commentBox.getLineCount();
+                    if(lines > 4) {
+                        commentBox.setMaxLines(4);
+                        readMore.setVisibility(View.VISIBLE);
+
+                        readMore.setOnClickListener(new View.OnClickListener() {
+                            Boolean full = false;
+                            @Override
+                            public void onClick(View view) {
+
+                                if(!full) {
+                                    readMore.setText(R.string.less);
+                                    commentBox.setMaxLines(Integer.MAX_VALUE);
+                                    full = true;
+                                }else if(full){
+                                    readMore.setText(R.string.more);
+                                    commentBox.setMaxLines(4);
+                                    full = false;
+                                }
+                            }
+                        });
+
+                    }
+                }
+            });
         }
 
 
