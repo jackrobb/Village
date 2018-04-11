@@ -46,6 +46,7 @@ public class ForumTab extends Fragment implements View.OnClickListener{
     private FloatingActionButton createPost;
     private RecyclerView forumList;
     private DatabaseReference database;
+    private DatabaseReference comments;
     private FirebaseAuth auth;
     private boolean isLiked = false;
     private DatabaseReference like;
@@ -67,6 +68,7 @@ public class ForumTab extends Fragment implements View.OnClickListener{
         //Get reference to forum and likes database
         database = FirebaseDatabase.getInstance().getReference().child("Forum");
         like = FirebaseDatabase.getInstance().getReference().child("Like");
+        comments=FirebaseDatabase.getInstance().getReference().child("Comments");
 
         //Keep the data synced to save user data and improve load times
         database.keepSynced(true);
@@ -209,6 +211,7 @@ public class ForumTab extends Fragment implements View.OnClickListener{
                                     case R.id.delete:
                                         like.child(forum_id).removeValue();
                                         database.child(forum_id).removeValue();
+                                        comments.child(forum_id).removeValue();
                                         break;
                                     case R.id.share:
                                         Intent sendIntent = new Intent();
@@ -351,6 +354,7 @@ public class ForumTab extends Fragment implements View.OnClickListener{
                                     case R.id.delete:
                                         like.child(forum_id).removeValue();
                                         database.child(forum_id).removeValue();
+                                        comments.child(forum_id).removeValue();
                                         break;
                                     case R.id.share:
                                         Intent sendIntent = new Intent();
