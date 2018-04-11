@@ -19,7 +19,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
  */
 public class TabHome extends Fragment {
 
-    TextView title, description, paragraphOne, paragraphTwo;
+    TextView title, description;
     FirebaseRemoteConfig firebaseRemoteConfig;
 
     public TabHome() {

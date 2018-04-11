@@ -309,6 +309,7 @@ public class CommentReplies extends AppCompatActivity {
             //Set content from content pulled from database
             final TextView commentBox = mView.findViewById(R.id.comment);
             commentBox.setText(comment);
+            readMore.setVisibility(View.INVISIBLE);
 
             //Set max lines to 4 and allow users to expand and shrink the text view
             commentBox.setMaxLines(4);

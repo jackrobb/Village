@@ -210,20 +210,22 @@ public class ForumComments extends AppCompatActivity {
         forum.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-               String title = dataSnapshot.child("title").getValue().toString();
-               String content = dataSnapshot.child("content").getValue().toString();
-               String image = dataSnapshot.child("image").getValue().toString();
+                    String title = dataSnapshot.child("title").getValue(String.class);
+                    String content = dataSnapshot.child("content").getValue(String.class);
+                    String image = dataSnapshot.child("image").getValue(String.class);
 
-                forumTitle.setText(title);
-                forumContent.setText(content);
 
-                Glide.with(ForumComments.this)
-                        .load(image)
-                        .apply(new RequestOptions()
-                                .override(600, 600)
-                                .centerCrop()
-                                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
-                        .into(forumImage);
+                    forumTitle.setText(title);
+                    forumContent.setText(content);
+
+
+                    Glide.with(getApplicationContext())
+                            .load(image)
+                            .apply(new RequestOptions()
+                                    .override(600, 600)
+                                    .centerCrop()
+                                    .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                            .into(forumImage);
 
                 //Set max lines to four to reduce the amount of space the text view takes up
                 forumContent.setMaxLines(4);
@@ -529,6 +531,7 @@ public class ForumComments extends AppCompatActivity {
             //Set content from content pulled from database
             final TextView commentBox = mView.findViewById(R.id.comment);
             commentBox.setText(comment);
+            readMore.setVisibility(View.INVISIBLE);
 
             //Set max lines to 4 and allow users to expand and shrink the text view
             commentBox.setMaxLines(4);

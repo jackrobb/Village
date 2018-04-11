@@ -569,6 +569,7 @@ public class ForumTab extends Fragment implements View.OnClickListener{
             //Set content from content pulled from database
             final TextView forumContent = mView.findViewById(R.id.forumContent);
             forumContent.setText(content);
+            readMore.setVisibility(View.INVISIBLE);
 
             //Set max lines to 4 and allow users to expand and shrink the text view
             forumContent.setMaxLines(4);
