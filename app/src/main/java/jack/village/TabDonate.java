@@ -19,9 +19,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class TabDonate extends Fragment {
 
     WebView webView;
+    FirebaseAuth auth;
     ImageButton refresh;
     TextView reload;
     String url = "https://donorbox.org/village";
@@ -116,8 +119,22 @@ public class TabDonate extends Fragment {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setUseWideViewPort(true);
         webView.loadUrl(url);
+        //Get reference to auth eventsDB
+        auth = FirebaseAuth.getInstance();
     }
 
+    public void onResume(){
+        super.onResume();
+        String admin = "jrobb6696@gmail.com";
+        //Only allow admin to access the new events button
+        if(auth.getCurrentUser() == null){
+            androidPay.setVisibility(View.GONE);
+        }else if (auth.getCurrentUser().getEmail().equals(admin)) {
+            androidPay.setVisibility(View.VISIBLE);
+        }else{
+            androidPay.setVisibility(View.GONE);
+        }
+    }
 
 
     public class WiseWeWebClient extends WebViewClient {
