@@ -126,7 +126,7 @@ public class TabDonate extends Fragment {
     public void onResume(){
         super.onResume();
         String admin = "jrobb6696@gmail.com";
-        //Only allow admin to access the new events button
+        //Only allow admin to access the android pay option
         if(auth.getCurrentUser() == null){
             androidPay.setVisibility(View.GONE);
         }else if (auth.getCurrentUser().getEmail().equals(admin)) {
